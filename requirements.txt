@@ -5,7 +5,7 @@ Unipath==1.0
 argparse==1.2.1
 dj-database-url==0.3.0
 dj-static==0.0.6
-django-admin-flexselect==0.4.1
+-e git://github.com/robcharlwood/django-admin-flexselect@8888533d5c6feca257857306a3171a29d44fc410#egg=django_admin_flexselect-master
 django-apptemplates==0.0.1
 django-autocomplete-light==1.4.14
 django-classy-tags==0.5.1
