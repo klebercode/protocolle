@@ -1,0 +1,74 @@
+{% load i18n %}
+{% load staticfiles %}
+<html>
+	<head>
+		<title>Protocolle - Emissão de Etiqueta</title>
+	</head>
+
+	<style type="text/css">
+		body {
+			font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 12px;
+			color: #000;
+			overflow-y: hidden;
+			padding: 0;
+			margin: 10px;
+		}
+		table {
+			width: 30%;
+			padding: 5px;
+			margin-bottom: 20px;
+			font-size: 12px;
+            margin-left: auto;
+            margin-right: auto;
+		}
+		.font-peq {font-size: 10px;}
+		.font-med {font-size: 12px;}
+		.font-gra {font-size: 14px;}
+		.titulo {border-bottom: 1px solid #A1A1A1;}
+		.borda {border: 1px solid #555;}
+		.assinatura, .buttons {
+			width: 30%;
+			text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+		}
+		.assinatura {margin-top: 60px;}
+		.buttons {margin-top: 30px;}
+		.documentos {margin-top: -19px;}
+	</style>
+
+	<body>
+		<style type="text/css" media="print">
+			.printbutton {
+				visibility: hidden;
+				display: none;
+			}
+		</style>
+
+		<table class="borda">
+			<thead>
+				<tr>
+					<th>
+						<p class="font-gra">[Cliente]</p>
+                        <p><img src="{{ codigo }}" width="200"></p>
+					</th>
+				</tr>
+			</thead>
+		</table>
+
+		<div class="buttons">
+			<script>
+				document.write("<input type='button' " +
+					"onClick='window.print(); window.close();' " +
+					"class='printbutton' " +
+					"value='Imprimir'/>");
+				document.write("<input type='button' " +
+					"onClick='window.close()' " +
+					"class='printbutton' " +
+					"value='Fechar'/>");
+			</script>
+		</div>
+
+	</body>
+</html>

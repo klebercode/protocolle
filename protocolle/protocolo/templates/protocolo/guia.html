@@ -1,0 +1,121 @@
+{% load i18n %}
+{% load staticfiles %}
+<html>
+	<head>
+		<title>Protocolle - Emissão de Guia</title>
+	</head>
+
+	<style type="text/css">
+		body {
+			font-family: 'Open Sans',"Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 12px;
+			color: #000;
+			overflow-y: hidden;
+			padding: 0;
+			margin: 10px;
+		}
+		table {
+			width: 100%;
+			padding: 5px;
+			margin-bottom: 20px;
+			font-size: 12px;
+		}
+		.font-peq {font-size: 10px;}
+		.font-med {font-size: 12px;}
+		.font-gra {font-size: 14px;}
+		.titulo {border-bottom: 1px solid #A1A1A1;}
+		.borda {border: 1px solid #555;}
+		.assinatura, .buttons {
+			width: 100%;
+			text-align: center;
+		}
+		.assinatura {margin-top: 60px;}
+		.buttons {margin-top: 30px;}
+		.documentos {margin-top: -19px;}
+	</style>
+
+	<body>
+		<style type="text/css" media="print">
+			.printbutton {
+				visibility: hidden;
+				display: none;
+			}
+		</style>
+
+		<table class="borda">
+			<thead>
+				<tr>
+					<th height="60" width="30%">
+						<p class="font-gra">Protocolle</p>
+						<p class="font-gra">[Cliente]</p>
+					</th>
+					<th height="60" width="40%">
+						<p class="font-gra">Guia de Documentos</p>
+						<p>Data - Hora</p>
+					</th>
+					<th height="60" width="30%">
+						<p class="font-gra"></p>
+						<p><img src="{{ codigo }}" width="200"></p>
+					</th>
+				</tr>
+			</thead>
+		</table>
+		<table class="borda">
+			<tbody>
+				<tr class="borda">
+					<td class="font-gra">
+						<strong>Orgiem:</strong> {{ tramite.origem }} / {{ tramite.origem_setor }}
+					</td>
+				</tr>
+				<tr>
+					<td class="font-gra">
+						<strong>Destino:</strong> {{ tramite.destino }} / {{ tramite.destino_setor }}
+					</td>
+				</tr>
+			</tbody>
+        </table>
+		<table class="borda documentos">
+			<tbody>
+				<tr>
+					<th colspan="2">
+						<table>
+							<thead>
+								<tr>
+									<th class="titulo">Protocolo</th>
+									<th class="titulo">Tipo de Doc.</th>
+									<th class="titulo">Número do Doc.</th>
+									<th class="titulo">Assunto</th>
+									<th class="titulo">Remetente</th>
+									<th class="titulo">Recebimento</th>
+								</tr>
+							</thead>
+							<tbody align="center">
+								{% autoescape off %}
+								{{ tramite.get_documentos_guia|linebreaks }}
+								{% endautoescape %}
+							</tbody>
+						</table>
+					</th>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="assinatura">
+			<p>__________________________________________________<br>Recebido por</p>
+		</div>
+
+		<div class="buttons">
+			<script>
+				document.write("<input type='button' " +
+					"onClick='window.print(); window.close();' " +
+					"class='printbutton' " +
+					"value='Imprimir'/>");
+				document.write("<input type='button' " +
+					"onClick='window.close()' " +
+					"class='printbutton' " +
+					"value='Fechar'/>");
+			</script>
+		</div>
+
+	</body>
+</html>

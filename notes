@@ -1,0 +1,8 @@
+from customers.models import Client
+
+tenant = Client(domain_url='protocolo.com', schema_name='public', name='OWL',
+paid_until='2020-12-05', on_trial=False)
+
+tenant = Client(domain_url='kleber.protocolo.com', schema_name='kleber', name='Kleber Soares', paid_until='2016-12-05', on_trial=False)
+
+tenant.save()
