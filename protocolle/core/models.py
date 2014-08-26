@@ -45,7 +45,7 @@ class TipoDocumento(models.Model):
                             help_text=_(u'Carta / Ofício / Balancete'))
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Tipo de Documento')
@@ -58,7 +58,7 @@ class Carater(models.Model):
                             help_text=_(u'Normal / Urgente / Urgentissímo'))
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Caráter')
@@ -71,7 +71,7 @@ class Natureza(models.Model):
                             help_text=_(u'Aberto / Sigiloso'))
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Natureza')
@@ -85,7 +85,7 @@ class Status(models.Model):
                                         / Entregue'))
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Status')
@@ -98,7 +98,7 @@ class TipoInstituicao(models.Model):
                             help_text=_(u'Interna / Externa'))
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Tipo de Instituição')
@@ -108,16 +108,17 @@ class TipoInstituicao(models.Model):
 
 class Grupo(models.Model):
     nome = models.CharField(_(u'Nome'), max_length=100,
-                            help_text=_(u'Empresa Privada / Orgão Público / Administração Direta'))
+                            help_text=_(u'Empresa Privada / Orgão Público / \
+                                        Administração Direta'))
     tipo_instituicao = models.ForeignKey(TipoInstituicao,
-                                         verbose_name=_(u'Tipo de Instituição'),
+                                         verbose_name=_(u'Tipo de \
+                                                        Instituição'),
                                          related_name='TiposInstituicao')
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Grupo')
         verbose_name_plural = _(u'Grupos')
         ordering = ['nome']
-

@@ -2,8 +2,6 @@
 
 from django.contrib import admin
 
-from flexselect import FlexSelectWidget
-
 from protocolle.core.models import (TipoDocumento, Carater, Natureza,
                                     Status, TipoInstituicao, Grupo)
 
@@ -51,4 +49,3 @@ admin.site.register(Grupo, GrupoAdmin)
 admin.site.register(Carater, CaraterAdmin)
 admin.site.register(Natureza, NaturezaAdmin)
 admin.site.register(Status, StatusAdmin)
-

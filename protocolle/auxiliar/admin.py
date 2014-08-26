@@ -6,9 +6,8 @@ from django.contrib.auth.models import User
 
 from flexselect import FlexSelectWidget
 
-from protocolle.core.models import (TipoDocumento, Carater, Natureza,
-                                    Status, TipoInstituicao, Grupo)
-from protocolle.auxiliar.models import (Instituicao, Pessoa, Setor, 
+from protocolle.core.models import Grupo
+from protocolle.auxiliar.models import (Instituicao, Pessoa, Setor,
                                         Instituicao_User)
 
 
@@ -16,7 +15,7 @@ class InstituicaoWidget(FlexSelectWidget):
     trigger_fields = ['tipo_instituicao']
 
     def details(self, base_field_instance, instance):
-        pass
+        return ""
 
     def queryset(self, instance):
         tipo_instituicao_id = instance.tipo_instituicao.id
@@ -97,7 +96,7 @@ class Instituicao_UserInline(admin.TabularInline):
 
 
 class Instituicao_UserAdmin(UserAdmin):
-    list_display = UserAdmin.list_display + ('get_instituicao',) 
+    list_display = UserAdmin.list_display + ('get_instituicao',)
     inlines = (Instituicao_UserInline,)
 
     def get_instituicao(self, obj):
@@ -115,4 +114,3 @@ admin.site.register(User, Instituicao_UserAdmin)
 admin.site.register(Instituicao, InstituicaoAdmin)
 admin.site.register(Setor, SetorAdmin)
 admin.site.register(Pessoa, PessoaAdmin)
-
