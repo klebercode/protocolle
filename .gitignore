@@ -16,3 +16,4 @@ protocolle/staticfiles
 protocolle/media
 ignore
 old
+*.backup
