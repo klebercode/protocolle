@@ -4,9 +4,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 
-from protocolle.core.models import (TipoDocumento, Carater, Natureza,
-                                    Status, TipoInstituicao, Grupo, 
-                                    STATE_CHOICES)
+from protocolle.core.models import (TipoInstituicao, Grupo, STATE_CHOICES)
 
 
 class Pessoa(models.Model):
@@ -17,15 +15,16 @@ class Pessoa(models.Model):
                                 help_text=_(u'Rua / Avenida'), null=True,
                                 blank=True)
     numero = models.IntegerField(_(u'Número'), null=True, blank=True)
-    bairro = models.CharField(_(u'Bairro'), max_length=150, null=True, 
+    bairro = models.CharField(_(u'Bairro'), max_length=150, null=True,
                               blank=True)
     complemento = models.CharField(_(u'Complemento'), max_length=200,
-                                   help_text=_(u'Apartamento / Sala / Referência'),
+                                   help_text=_(u'Apartamento / Sala / \
+                                               Referência'),
                                    null=True, blank=True)
     cep = models.CharField(_(u'CEP'), max_length=10, null=True, blank=True)
-    cidade = models.CharField(_(u'Cidade'), max_length=150, null=True, 
+    cidade = models.CharField(_(u'Cidade'), max_length=150, null=True,
                               blank=True)
-    uf = models.CharField(_(u'UF'), max_length=2, null=True, blank=True, 
+    uf = models.CharField(_(u'UF'), max_length=2, null=True, blank=True,
                           choices=STATE_CHOICES)
 
     # def clean(self):
@@ -33,7 +32,7 @@ class Pessoa(models.Model):
     #       raise ValidationError('Erro!')
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Pessoa')
@@ -45,7 +44,8 @@ class Instituicao(models.Model):
     nome = models.CharField(_(u'Nome'), max_length=100,
                             help_text=_(u'Nome da instituição'))
     tipo_instituicao = models.ForeignKey(TipoInstituicao,
-                                         verbose_name=_(u'Tipo de Instituição'),
+                                         verbose_name=_(u'Tipo de \
+                                                        Instituição'),
                                          related_name='InsTiposInstituicao')
     grupo = models.ForeignKey(Grupo, verbose_name=_(u'Grupo'),
                               related_name='InsGrupos')
@@ -55,15 +55,16 @@ class Instituicao(models.Model):
                                 help_text=_(u'Rua / Avenida'),
                                 null=True, blank=True)
     numero = models.IntegerField(_(u'Número'), null=True, blank=True)
-    bairro = models.CharField(_(u'Bairro'), max_length=150, null=True, 
+    bairro = models.CharField(_(u'Bairro'), max_length=150, null=True,
                               blank=True)
     complemento = models.CharField(_(u'Complemento'), max_length=200,
-                                   help_text=_(u'Apartamento / Sala / Referência'),
+                                   help_text=_(u'Apartamento / Sala / \
+                                               Referência'),
                                    null=True, blank=True)
     cep = models.CharField(_(u'CEP'), max_length=10, null=True, blank=True)
-    cidade = models.CharField(_(u'Cidade'), max_length=150, null=True, 
+    cidade = models.CharField(_(u'Cidade'), max_length=150, null=True,
                               blank=True)
-    uf = models.CharField(_(u'UF'), max_length=2, blank=True, null=True, 
+    uf = models.CharField(_(u'UF'), max_length=2, blank=True, null=True,
                           choices=STATE_CHOICES)
 
     # def clean(self):
@@ -80,7 +81,8 @@ class Instituicao(models.Model):
 
 
 class Setor(models.Model):
-    instituicao = models.ForeignKey(Instituicao, verbose_name=_(u'Instituição'),
+    instituicao = models.ForeignKey('Instituicao',
+                                    verbose_name=_(u'Instituição'),
                                     related_name='SetorInstituicoes')
     nome = models.CharField(_(u'Nome'), max_length=100)
     sigla = models.CharField(_(u'Sigla'), max_length=20)
@@ -92,17 +94,18 @@ class Setor(models.Model):
     #       raise ValidationError('Erro!')
 
     def __unicode__(self):
-        return self.nome
+        return unicode(self.nome)
 
     class Meta:
         verbose_name = _(u'Setor')
         verbose_name_plural = _(u'Setores')
         ordering = ['nome']
 
+
 class Instituicao_User(models.Model):
     user = models.OneToOneField(User, unique=True)
-    instituicao = models.ForeignKey('Instituicao', 
-                                    verbose_name=_(u'Instituição'), 
+    instituicao = models.ForeignKey('Instituicao',
+                                    verbose_name=_(u'Instituição'),
                                     blank=True, null=True)
 
     def __unicode__(self):
@@ -120,4 +123,3 @@ class Instituicao_User(models.Model):
 #         profile, created = UserProfile.objects.get_or_create(user=instance)
 
 # post_save.connect(create_profile, sender=User)
-
