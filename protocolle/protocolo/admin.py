@@ -2,8 +2,8 @@
 
 from django.contrib import admin
 from django.contrib.admin.options import TabularInline
-from django.core.exceptions import PermissionDenied
-from django import forms
+# from django.core.exceptions import PermissionDenied
+# from django import forms
 
 # from django.template import RequestContext
 from django.conf.urls import patterns
@@ -14,27 +14,28 @@ from django.shortcuts import render
 import autocomplete_light
 # import autocomplete_light_registry
 
-from protocolle.auxiliar.models import (TipoDocumento, Carater, Natureza,
-                                        Instituicao, Pessoa, Setor, Status,
-                                        Instituicao_User)
+from protocolle.core.models import Status
+from protocolle.auxiliar.models import Instituicao_User
 from protocolle.protocolo.models import (Documento, DocumentoAnexo, Tramite,
                                          Tramite_Documento)
 
 import barcode
-from barcode.writer import ImageWriter
+# from barcode.writer import ImageWriter
 
-from django.forms.widgets import HiddenInput
+# from django.forms.widgets import HiddenInput
 
 
 def get_status_id(status):
     s = Status.objects.get(nome=status)
     return s.pk
 
+
 def arquivar_doc(self, request, queryset):
     for obj in queryset:
         iu = Instituicao_User.objects.get(user_id=request.user.pk)
         print obj.pk
-        td = Tramite_Documento.objects.filter(protocolo_id=obj.pk).order_by('-id')[0]
+        td = Tramite_Documento.objects.filter(
+            protocolo_id=obj.pk).order_by('-id')[0]
         print td.protocolo_id
         print td.tramite_id
         t = Tramite.objects.get(id=td.tramite_id)
@@ -73,10 +74,10 @@ class DocumentoAdmin(admin.ModelAdmin):
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
                     'numero', 'origem', 'interessado', 'status', 'operacao',
                     'action_link')
-    search_fields = ('get_data_recebimento', 'protocolo', 
-                     'tipo_documento__nome', 'numero', 'carater__nome', 
-                     'natureza__nome', 'origem__nome', 'interessado__nome', 
-                     'status__nome', 'data_documento', 'data_validade', 
+    search_fields = ('get_data_recebimento', 'protocolo',
+                     'tipo_documento__nome', 'numero', 'carater__nome',
+                     'natureza__nome', 'origem__nome', 'interessado__nome',
+                     'status__nome', 'data_documento', 'data_validade',
                      'destino__nome', 'assunto', 'observacao')
     date_hierarchy = 'data_recebimento'
     raw_id_fields = ('origem', 'destino', 'interessado')
@@ -87,16 +88,16 @@ class DocumentoAdmin(admin.ModelAdmin):
 
     inlines = [DocumentoAnexoInline]
 
-    actions = [arquivar_doc, desarquivar_doc, entregar_doc,]
+    actions = [arquivar_doc, desarquivar_doc, entregar_doc]
 
     def has_change_permission(self, request, obj=None):
         """
-        Bloquear a edicao de documentos que estao com status diferente 
+        Bloquear a edicao de documentos que estao com status diferente
         de 'Parado'
         """
         if obj is not None and obj.status_id != get_status_id('Parado'):
             return False
-        return super(DocumentoAdmin, 
+        return super(DocumentoAdmin,
                      self).has_change_permission(request, obj=obj)
 
     # def get_list_display_links(self, request, list_display):
@@ -107,7 +108,7 @@ class DocumentoAdmin(admin.ModelAdmin):
 
     def get_actions(self, request):
         """
-        Remover a acao de deletar na lista 
+        Remover a acao de deletar na lista
         """
         actions = super(DocumentoAdmin, self).get_actions(request)
         # if request.user.username[0].upper() != 'J':
@@ -120,9 +121,9 @@ class DocumentoAdmin(admin.ModelAdmin):
         Adicionar os botoes de acao apenas nos documentos com status igual
         a 'Parado'
         """
-        app_name = obj._meta.app_label
-        url_name = obj._meta.module_name
-        data_id = obj.id
+        # app_name = obj._meta.app_label
+        # url_name = obj._meta.module_name
+        # data_id = obj.id
 
         if obj.status_id == get_status_id('Parado'):
             return """
@@ -143,7 +144,7 @@ class DocumentoAdmin(admin.ModelAdmin):
     action_link.short_description = 'Ações'
 
     def get_protocolo(self, obj):
-        if not obj.status_id == get_status_id('Parado'): 
+        if not obj.status_id == get_status_id('Parado'):
             return "</a>%s<a>" % obj.protocolo
         else:
             return obj.protocolo
@@ -196,33 +197,33 @@ class Tramite_DocumentoInline(admin.TabularInline):
 #         w.choices = choices
 
 class TramiteAdmin(admin.ModelAdmin):
-    list_filter = ('origem', 'origem_setor', 'destino', 'destino_setor') 
-    list_display = ('get_numero_guia', 'get_data_tramite', 'origem', 
-                    'origem_setor', 'destino', 'destino_setor', 
+    list_filter = ('origem', 'origem_setor', 'destino', 'destino_setor')
+    list_display = ('get_numero_guia', 'get_data_tramite', 'origem',
+                    'origem_setor', 'destino', 'destino_setor',
                     'get_documentos', 'action_link')
-    search_fields = ('id', 'data_tramite', 'origem__nome', 
-                     'origem_setor__nome', 'destino__nome', 
+    search_fields = ('id', 'data_tramite', 'origem__nome',
+                     'origem_setor__nome', 'destino__nome',
                      'destino_setor__nome', 'protocolo__protocolo',)
     date_hierarchy = 'data_tramite'
     # filter_horizontal = ('protocolo',)
     raw_id_fields = ('origem', 'origem_setor', 'destino', 'destino_setor',)
                      # 'protocolo',)
 
-    autocomplete_lookup_fields = {
     # related_lookup_fields = {
+    autocomplete_lookup_fields = {
         'fk': ['origem', 'origem_setor', 'destino', 'destino_setor'],
         # 'm2m': ['protocolo'],
     }
 
     # form = TramiteAdminForm
     form = autocomplete_light.modelform_factory(Tramite)
-    
+
     inlines = [Tramite_DocumentoInline]
 
     # change_list_template = "admin/protocolle/change_list.html"
     # change_list_template = "admin/change_list_filter_sidebar.html"
     # review_template = 'admin/protocolo/detail_view.html'
-    
+
     # def get_queryset(self):
     #     qs = self.model._default_manager.get_queryset()
     #     # try to find model admin queryset
@@ -252,7 +253,7 @@ class TramiteAdmin(admin.ModelAdmin):
         """
         if obj is not None:
             return False
-        return super(TramiteAdmin, 
+        return super(TramiteAdmin,
                      self).has_change_permission(request, obj=obj)
 
     def get_urls(self):
@@ -316,9 +317,9 @@ class TramiteAdmin(admin.ModelAdmin):
         return render(request, 'protocolo/etiqueta.html', context)
 
     def action_link(self, obj):
-        app_name = obj._meta.app_label
-        url_name = obj._meta.module_name
-        data_id = obj.id
+        # app_name = obj._meta.app_label
+        # url_name = obj._meta.module_name
+        # data_id = obj.id
 
         # <a href="/admin/{0}/{1}/{2}" class="grp-results">Editar</a>
         return """
@@ -357,4 +358,3 @@ class TramiteAdmin(admin.ModelAdmin):
 
 admin.site.register(Tramite, TramiteAdmin)
 admin.site.register(Documento, DocumentoAdmin)
-
