@@ -1,12 +1,12 @@
 # coding: utf-8
 
 from django.db import models
-from django.db.models import Q
-from django.db.models.signals import post_save, pre_save, m2m_changed
+# from django.db.models import Q
+from django.db.models.signals import post_save  # , pre_save, m2m_changed
 from django.utils.translation import ugettext_lazy as _
 
 import datetime
-from datetime import date
+# from datetime import date
 now = datetime.datetime.now()
 
 from protocolle.core.models import (TipoDocumento, Carater, Natureza,
@@ -19,20 +19,20 @@ class Documento(models.Model):
     tipo_documento = models.ForeignKey(TipoDocumento,
                                        verbose_name=_(u'Tipo de Documento'),
                                        related_name='DocTiposDocumento')
-    protocolo = models.CharField(_(u'Número do Protocolo'), max_length=100, 
+    protocolo = models.CharField(_(u'Número do Protocolo'), max_length=100,
                                  unique=True, default=0, editable=False)
     numero = models.CharField(_(u'Número do Documento'), max_length=100)
-    data_recebimento = models.DateTimeField(_(u'Data de Recebimento'), 
+    data_recebimento = models.DateTimeField(_(u'Data de Recebimento'),
                                             auto_now_add=True)
     data_documento = models.DateField(_(u'Data do Documento'))
-    data_validade = models.DateField(_(u'Data de Validade'), 
+    data_validade = models.DateField(_(u'Data de Validade'),
                                      null=True, blank=True)
     folhas = models.IntegerField(_(u'Número de Folhas'), null=True, blank=True)
     carater = models.ForeignKey(Carater, verbose_name=_(u'Caráter'),
                                 related_name='DocCarateres')
     natureza = models.ForeignKey(Natureza, verbose_name=_(u'Natureza'),
                                  related_name='DocNaturezas')
-    origem = models.ForeignKey(Instituicao, 
+    origem = models.ForeignKey(Instituicao,
                                verbose_name=_(u'Instituição Origem'),
                                related_name='DocInstituicoesOri')
     destino = models.ForeignKey(Instituicao,
@@ -42,13 +42,12 @@ class Documento(models.Model):
     interessado = models.ForeignKey(Pessoa, verbose_name=_(u'Interessado'),
                                     related_name='DocPessoasRem')
     status = models.ForeignKey(Status, verbose_name=_(u'Status'),
-                                 related_name='DocSituacoes', default=3,
-                                 editable=False)
+                               related_name='DocSituacoes', editable=False)
     observacao = models.TextField(_(u'Observação'), null=True, blank=True)
 
     def save(self, *args, **kwargs):
         """
-        Funcao para gerar o número de protocolo 
+        Funcao para gerar o número de protocolo
         unico e personalizado
         """
         if not self.id:
@@ -68,8 +67,8 @@ class Documento(models.Model):
     def __unicode__(self):
         # return self.protocolo
         return "%s | %s | %s | %s | %s" % (
-            self.protocolo, 
-            self.data_recebimento.strftime("%d/%m/%Y"), 
+            self.protocolo,
+            self.data_recebimento.strftime("%d/%m/%Y"),
             unicode(self.tipo_documento),
             unicode(self.origem),
             unicode(self.interessado))
@@ -113,7 +112,7 @@ class Tramite_Documento(models.Model):
 class Tramite(models.Model):
     data_tramite = models.DateTimeField(_(u'Data do Tramite'),
                                         auto_now_add=True)
-    origem = models.ForeignKey(Instituicao, 
+    origem = models.ForeignKey(Instituicao,
                                verbose_name=_(u'Instituição Origem'),
                                related_name='TraInstituicoesOri')
     origem_setor = models.ForeignKey(Setor, verbose_name=_(u'Setor Origem'),
@@ -124,11 +123,11 @@ class Tramite(models.Model):
     destino_setor = models.ForeignKey(Setor, verbose_name=_(u'Setor Destino'),
                                       related_name='TraSetoresDes')
     motivo = models.TextField(_(u'Motivo'), blank=True, null=True)
-    protocolo = models.ManyToManyField(Documento, 
+    protocolo = models.ManyToManyField(Documento,
                                        verbose_name=_(u'Protocolos'),
-                                       related_name='TraDocumentos', 
+                                       related_name='TraDocumentos',
                                        through=Tramite_Documento)
-                                       # limit_choices_to={'status': 
+                                       # limit_choices_to={'status':
                                        #                   Documento.objects.exclude(
                                        #                       pk=2)})
 # Funcao para filtrar os documentos com status diferente de 'Arquivado'
@@ -140,7 +139,7 @@ class Tramite(models.Model):
         out = []
         for k in self.protocolo.all():
             out.append(
-                # Removi essa parte porque ela inseria o link 
+                # Removi essa parte porque ela inseria o link
                 # para o documento e agora nem todos os documentos
                 # sao editaveis, entao nao fazia sentido
                 # '<a href="../%s/%s">%s</a><br>' % (
@@ -156,11 +155,12 @@ class Tramite(models.Model):
         out = []
         for k in self.protocolo.all():
             out.append(
-                '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>' % (
-                    k.protocolo, k.tipo_documento, k.numero,
-                    k.assunto, k.interessado, k.data_recebimento))
+                '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td> \
+                <td>%s</td></tr>' % (k.protocolo, k.tipo_documento, k.numero,
+                                     k.assunto, k.interessado,
+                                     k.data_recebimento))
             # out.append(
-            #     k.protocolo, k.tipo_documento, k.numero, 
+            #     k.protocolo, k.tipo_documento, k.numero,
             #     k.assunto, k.interessado, k.data_recebimento)
         return ''.join(out)
         # return ''.join(out)
@@ -175,25 +175,26 @@ class Tramite(models.Model):
 
 
 def status_changed(sender, instance, **kwargs):
-    """ 
-    funcao que envia um sinal para mudar o status 
-    dos documentos atraves da tabela: Tramite_Documento 
+    """
+    funcao que envia um sinal para mudar o status
+    dos documentos atraves da tabela: Tramite_Documento
     por conta do InLine no admin
     """
-    s = Status.objects.get(nome='Tramitando')
+    s = Status.objects.get_or_create(nome='Tramitando')
     if s.pk:
         instance.protocolo.status_id = s.pk
         instance.protocolo.save()
 
-post_save.connect(status_changed, 
-                  sender=Tramite_Documento, 
-                  dispatch_uid='status_changed_tramitando') #weak=False)
+post_save.connect(status_changed,
+                  sender=Tramite_Documento,
+                  dispatch_uid='status_changed_tramitando')  # weak=False)
 
 # # funcao que envia um sinal para alterar o status dos documentos atraves da
 # tabela: Tramite se ela nao tiver um InLine
 # start
 # def save_handler(sender, instance, *args, **kwargs):
-#     m2m_changed.connect(m2m_handler, sender=sender.protocolo.through, weak=False)
+#     m2m_changed.connect(m2m_handler, sender=sender.protocolo.through,
+#                         weak=False)
 
 # def m2m_handler(sender, instance, action, *args, **kwargs):
 #     if action =='post_clear':
@@ -203,7 +204,7 @@ post_save.connect(status_changed,
 #             d.save()
 
 # post_save.connect(save_handler, sender=Tramite, weak=False)
-# # end  
+# # end
 
 # def do_something(sender, **kwargs):
     # the object which is saved can be accessed via kwargs 'instance' key.
@@ -212,7 +213,6 @@ post_save.connect(status_changed,
     # ...do something else...
 
 # here we connect a post_save signal for MyModel
-# in other terms whenever an instance of MyModel is saved 
+# in other terms whenever an instance of MyModel is saved
 # the 'do_something' function will be called.
 # post_save.connect(do_something, sender=Tramite)
-

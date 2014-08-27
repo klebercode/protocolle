@@ -26,7 +26,7 @@ import barcode
 
 
 def get_status_id(status):
-    s = Status.objects.get(nome=status)
+    s = Status.objects.get_or_create(nome=status)
     return s.pk
 
 
@@ -167,18 +167,22 @@ class Tramite_DocumentoInline(admin.TabularInline):
     fields = ['protocolo', 'folhas']
 
 
-# Funcao para filtrar os documentos com status diferente de 'Arquivado'
-# Nao funciona com o m2m do grappelli, por conta do raw_id_fields
-# Essa eh outra forma de fazer (mais intrusiva) criando um FormModel
 # class TramiteAdminForm(forms.ModelForm):
+#     """
+#     Funcao para filtrar os documentos com status diferente de 'Arquivado'
+#     Nao funciona com o m2m do grappelli, por conta do raw_id_fields
+#     Essa eh outra forma de fazer (mais intrusiva) criando um FormModel
+#     """
 #     protocolo = forms.ModelMultipleChoiceField(Documento.objects.all(),
-#         widget=autocomplete_light.MultipleChoiceWidget('DocumentoAutocomplete'))
+#         widget=autocomplete_light.MultipleChoiceWidget(
+#             'DocumentoAutocomplete'))
 
 #     class Meta:
 #         model = Tramite
 
 #         widget = {
-#             'protocolo': autocomplete_light.ChoiceWidget('DocumentoAutocomplete')
+#             'protocolo': autocomplete_light.ChoiceWidget(
+#                 'DocumentoAutocomplete')
 #         }
 
 #     def __init__(self, *args, **kwargs):
@@ -258,7 +262,8 @@ class TramiteAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super(TramiteAdmin, self).get_urls()
-        my_urls = patterns('',
+        my_urls = patterns(
+            '',
             (r'(?P<id>[\d\+]+)/guia/$',
                 self.admin_site.admin_view(self.guia)),
             (r'(?P<id>[\d\+]+)/etiqueta/$',
