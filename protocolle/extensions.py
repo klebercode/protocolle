@@ -46,7 +46,7 @@ class Navbar(object):
                 'url': reverse_lazy('admin:core_natureza_changelist'),
                 'perm': 'core.change_classe',
             }),
-            ('Status teste', {
+            ('Status', {
                 'url': reverse_lazy('admin:core_status_changelist'),
                 'perm': 'core.change_classe',
             }),

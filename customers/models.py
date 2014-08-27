@@ -1,6 +1,6 @@
 # coding: utf-8
 
-from django.db import models 
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from tenant_schemas.models import TenantMixin
@@ -16,7 +16,8 @@ class Client(TenantMixin):
     on_trial = models.BooleanField()
     created_on = models.DateField(auto_now_add=True)
 
-    # default true, schema will be automatically created and synced when it is saved
+    # default true, schema will be automatically created
+    # and synced when it is saved
     auto_create_schema = True
 
     def __unicode__(self):

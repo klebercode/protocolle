@@ -26,7 +26,7 @@ import barcode
 
 
 def get_status_id(status):
-    s = Status.objects.get_or_create(nome=status)
+    s = Status.objects.get(nome=status)
     return s.pk
 
 

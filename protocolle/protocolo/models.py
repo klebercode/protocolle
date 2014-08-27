@@ -62,6 +62,9 @@ class Documento(models.Model):
                 k = i.id+1
             # inseri um formato com zeros e ano (Ex: 00000002/2014)
             self.protocolo = '%08d/%d' % (k, now.year)
+
+            s = Status.objects.get(nome='Parado')
+            self.status = s
         super(Documento, self).save(*args, **kwargs)
 
     def __unicode__(self):
@@ -180,7 +183,7 @@ def status_changed(sender, instance, **kwargs):
     dos documentos atraves da tabela: Tramite_Documento
     por conta do InLine no admin
     """
-    s = Status.objects.get_or_create(nome='Tramitando')
+    s = Status.objects.get(nome='Tramitando')
     if s.pk:
         instance.protocolo.status_id = s.pk
         instance.protocolo.save()
