@@ -3,6 +3,7 @@ Pillow==2.4.0
 South==1.0
 Unipath==1.0
 argparse==1.2.1
+boto==2.32.1
 dj-database-url==0.3.0
 dj-static==0.0.6
 -e git://github.com/robcharlwood/django-admin-flexselect@8888533d5c6feca257857306a3171a29d44fc410#egg=django_admin_flexselect-master
@@ -12,6 +13,7 @@ django-classy-tags==0.5.1
 django-filebrowser==3.5.6
 django-grappelli==2.5.3
 -e git://github.com/django-grappelli-extensions/django-grappelli-extensions.git@bca8e7542c78d6d8a63b8b3906c40a1160db55fc#egg=django_grappelli_extensions-dev
+django-storages==1.1.8
 django-tenant-schemas==1.4.7
 gunicorn==19.1.0
 psycopg2==2.5.3
