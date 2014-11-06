@@ -60,9 +60,10 @@ class InstituicaoAdmin(admin.ModelAdmin):
                 modeladmin=self,
                 request=request,
             )
-        return super(InstituicaoAdmin,
-                     self).formfield_for_foreignkey(db_field,
-                                                    request, **kwargs)
+            kwargs['label'] = 'Grupo'
+        return super(
+            InstituicaoAdmin, self).formfield_for_foreignkey(
+            db_field, request, **kwargs)
 
 
 class SetorAdmin(admin.ModelAdmin):
