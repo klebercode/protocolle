@@ -9,11 +9,11 @@ admin.autodiscover()
 
 # from filebrowser.sites import site
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^grappelli/', include('grappelli.urls')),
     # url(r'^/grappelli/grp-doc/', include('grappelli.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include(admin.site.urls)),
     url(r'^flexselect/', include('flexselect.urls')),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
 )
-
