@@ -31,26 +31,58 @@ def get_status_id(status):
 
 
 def arquivar_doc(self, request, queryset):
+    """
+    Antes de arquivar o documento o sistema verifica se existe algum tramite
+    para o documento
+    - se existir: sera verificado se o ultimo destino do
+    documento no tramite e igual a insittuicao do usuario
+    - se nao existir: sera verificado se o destino no cadastro do
+    documento e igual a instituicao do usuario
+    """
     for obj in queryset:
         iu = Instituicao_User.objects.get(user_id=request.user.pk)
-        print obj.pk
-        td = Tramite_Documento.objects.filter(
-            protocolo_id=obj.pk).order_by('-id')[0]
-        print td.protocolo_id
-        print td.tramite_id
-        t = Tramite.objects.get(id=td.tramite_id)
-        print t.destino
-        print iu.instituicao
-        if iu.instituicao_id == t.destino_id:
-            if obj.status_id == get_status_id('Tramitando'):
+        # print "doc id: %s" % obj.pk
+
+        try:
+            # se existir tramite
+            td = Tramite_Documento.objects.filter(
+                protocolo_id=obj.pk).order_by('-id')[0]
+            # print "prot id: %s" % td.protocolo_id
+            # print "tram id: %s" % td.tramite_id
+            t = Tramite.objects.get(id=td.tramite_id)
+            # print "tram dest: %s" % t.destino
+            # print "inst user: %s" % iu.instituicao
+            destiny = t.destino_id
+            # print "try: %s" % destiny
+
+        except:
+            # se nao existir tramite
+            destiny = obj.destino_id
+            # print "except: %s" % destiny
+
+        if iu.instituicao_id == destiny:
+            if obj.status_id == get_status_id('Tramitando') \
+                    or obj.status_id == get_status_id('Parado'):
                 queryset.update(status=get_status_id('Arquivado'))
 arquivar_doc.short_description = "Arquivar documento"
 
 
 def desarquivar_doc(self, request, queryset):
+    """
+    Antes de desarquivar o documento o sistema verifica se existe algum tramite
+    para o documento
+    - se existir: o status sera alterado para 'Tramitando'
+    - se nao existir: o status sera alterado para 'Parado'
+    """
     for obj in queryset:
         if obj.status_id == get_status_id('Arquivado'):
-            queryset.update(status=get_status_id('Tramitando'))
+            if Tramite_Documento.objects.filter(protocolo_id=obj.pk):
+                # se existir tramite
+                sta = 'Tramitando'
+            else:
+                # se nao existir tramite
+                sta = 'Parado'
+            queryset.update(status=get_status_id(sta))
 desarquivar_doc.short_description = "Desarquivar documento"
 
 
