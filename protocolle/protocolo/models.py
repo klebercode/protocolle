@@ -35,7 +35,7 @@ class Documento(models.Model):
     origem = models.ForeignKey(Instituicao,
                                verbose_name=_(u'Instituição Origem'),
                                related_name='DocInstituicoesOri')
-    destino = models.ForeignKey(Instituicao,
+    destino = models.ForeignKey(Instituicao, editable=False,
                                 verbose_name=_(u'Instituição Destino'),
                                 related_name='DocInstituicoesDes')
     assunto = models.TextField(_(u'Assunto'))
