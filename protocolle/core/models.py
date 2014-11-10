@@ -119,6 +119,6 @@ class Grupo(models.Model):
         return unicode(self.nome)
 
     class Meta:
-        verbose_name = _(u'Grupo')
-        verbose_name_plural = _(u'Grupos')
+        verbose_name = _(u'Grupo de Instituição')
+        verbose_name_plural = _(u'Grupos de Instituições')
         ordering = ['nome']

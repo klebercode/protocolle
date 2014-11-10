@@ -4,10 +4,10 @@ from django.contrib import admin
 from django.contrib.admin.options import TabularInline
 # from django.core.exceptions import PermissionDenied
 # from django import forms
-
 # from django.template import RequestContext
 from django.conf.urls import patterns
 from django.shortcuts import render
+from django.db.models import Q
 
 # from flexselect import FlexSelectWidget
 
@@ -122,6 +122,15 @@ class DocumentoAdmin(admin.ModelAdmin):
 
     actions = [arquivar_doc, desarquivar_doc, entregar_doc]
 
+    def save_model(self, request, obj, form, change):
+        """
+        Salva automaticamente o destino do documento igual a instituicao do
+        usuario
+        """
+        iu = Instituicao_User.objects.get(user=request.user)
+        obj.destino = iu.instituicao
+        obj.save()
+
     def has_change_permission(self, request, obj=None):
         """
         Bloquear a edicao de documentos que estao com status diferente
@@ -162,8 +171,10 @@ class DocumentoAdmin(admin.ModelAdmin):
                 <nav class="grp-pagination">
                     <ul>
                         <li>
-                            <a href="/admin/{0}/{1}/{2}" class="grp-results">Editar</a>
-                            <a href="/admin/{0}/{1}/{2}/delete" class="grp-results grp-delete-link">Deletar</a>
+                            <a href="/{0}/{1}/{2}" \
+                            class="grp-results">Editar</a>
+                            <a href="/{0}/{1}/{2}/delete" \
+                            class="grp-results grp-delete-link">Deletar</a>
                         </li>
                     </ul>
                 </nav>
@@ -189,6 +200,31 @@ class DocumentoAdmin(admin.ModelAdmin):
     get_data_recebimento.allow_tags = True
     get_data_recebimento.short_description = 'Data do Recebimento'
     get_data_recebimento.admin_order_field = 'data_recebimento'
+
+    def queryset(self, request):
+        """
+        filtra os documentos com destino igual ao do usuario ou
+        documentos com tramite para para a instituicao do usuario
+        """
+        qs = super(DocumentoAdmin, self).queryset(request)
+        if request.user.is_superuser:
+            return qs
+        # pega a insittuicao do usuario
+        iu = Instituicao_User.objects.get(user=request.user)
+
+        try:
+            # busca os tramites relacionados a insituicao do usuario
+            t = Tramite.objects.filter(
+                Q(origem_id=iu.instituicao) | Q(destino_id=iu.instituicao)
+                ).order_by('-id')
+            # busca os documentos relacionados aos tramites
+            td = Tramite_Documento.objects.filter(tramite=t).order_by('-id')
+
+            return qs.filter(
+                Q(destino_id=iu.instituicao) |
+                Q(pk__in=td.all().values('protocolo_id')))
+        except:
+            return qs.filter(destino_id=iu.instituicao)
 
 
 class Tramite_DocumentoInline(admin.TabularInline):
@@ -358,14 +394,18 @@ class TramiteAdmin(admin.ModelAdmin):
         # url_name = obj._meta.module_name
         # data_id = obj.id
 
-        # <a href="/admin/{0}/{1}/{2}" class="grp-results">Editar</a>
+        # <a href="/{0}/{1}/{2}" class="grp-results">Editar</a>
         return """
             <nav class="grp-pagination">
                 <ul>
                     <li>
-                        <a href="{2}/guia/" class="grp-results" onclick="return showAddAnotherPopup(this);">Guia</a>
-                        <a href="{2}/etiqueta/" class="grp-results" onclick="return showAddAnotherPopup(this);">Etiqueta</a>
-                        <a href="/admin/{0}/{1}/{2}/delete" class="grp-results grp-delete-link">Deletar</a>
+                        <a href="{2}/guia/" class="grp-results" \
+                        onclick="return showAddAnotherPopup(this);">Guia</a>
+                        <a href="{2}/etiqueta/" class="grp-results" \
+                        onclick="return showAddAnotherPopup(this);"> \
+                        Etiqueta</a>
+                        <a href="/{0}/{1}/{2}/delete" \
+                        class="grp-results grp-delete-link">Deletar</a>
                     </li>
                 </ul>
             </nav>
@@ -387,9 +427,23 @@ class TramiteAdmin(admin.ModelAdmin):
     get_data_tramite.short_description = 'Data do Tramite'
     get_data_tramite.admin_order_field = 'data_tramite'
 
+    def queryset(self, request):
+        """
+        Filtrar apenas os tramites que o usuario esta envolvido, seja como
+        origem ou como destino
+        """
+        qs = super(TramiteAdmin, self).queryset(request)
+        if request.user.is_superuser:
+            return qs
+        # pega a instituicao do usuario
+        iu = Instituicao_User.objects.get(user=request.user)
+        # faz o filtro por qualquer relacionamento da insituicao com o tramite
+        return qs.filter(Q(origem_id=iu.instituicao) |
+                         Q(destino_id=iu.instituicao))
 
     # def action(self,form):
-    #   return "<a href='preview/%s' class='grp-button' onclick='return showAddAnotherPopup(this);'>view</a>" % (form.id)
+    #   return "<a href='preview/%s' class='grp-button' \
+    #   onclick='return showAddAnotherPopup(this);'>view</a>" % (form.id)
     # action.allow_tags = True
 
 

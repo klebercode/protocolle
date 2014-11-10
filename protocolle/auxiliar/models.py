@@ -112,8 +112,8 @@ class Instituicao_User(models.Model):
         return unicode(self.user)
 
     class Meta:
-        verbose_name = _(u'Instituição')
-        verbose_name_plural = _(u'Instituições')
+        verbose_name = _(u'Instituição do Usuário')
+        verbose_name_plural = _(u'Instituições do Usuário')
 
 
 # from django.db.models.signals import post_save
