@@ -221,10 +221,13 @@ class DocumentoAdmin(admin.ModelAdmin):
             td = Tramite_Documento.objects.filter(tramite=t).order_by('-id')
 
             return qs.filter(
+                Q(origem_id=iu.instituicao) |
                 Q(destino_id=iu.instituicao) |
                 Q(pk__in=td.all().values('protocolo_id')))
         except:
-            return qs.filter(destino_id=iu.instituicao)
+            return qs.filter(
+                Q(origem_id=iu.instituicao) |
+                Q(destino_id=iu.instituicao))
 
 
 class Tramite_DocumentoInline(admin.TabularInline):
