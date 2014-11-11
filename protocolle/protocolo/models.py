@@ -159,9 +159,9 @@ class Tramite(models.Model):
         for k in self.protocolo.all():
             out.append(
                 '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td> \
-                <td>%s</td></tr>' % (k.protocolo, k.tipo_documento, k.numero,
-                                     k.assunto, k.interessado,
-                                     k.data_recebimento))
+                <td>%s</td></tr>' % (
+                k.protocolo, k.tipo_documento, k.numero, k.assunto,
+                k.interessado, k.data_recebimento.strftime('%d/%m/%Y %H:%M')))
             # out.append(
             #     k.protocolo, k.tipo_documento, k.numero,
             #     k.assunto, k.interessado, k.data_recebimento)

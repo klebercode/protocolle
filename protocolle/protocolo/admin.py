@@ -8,6 +8,7 @@ from django.contrib.admin.options import TabularInline
 from django.conf.urls import patterns
 from django.shortcuts import render
 from django.db.models import Q
+from django.utils import timezone
 
 # from flexselect import FlexSelectWidget
 
@@ -19,10 +20,15 @@ from protocolle.auxiliar.models import Instituicao_User
 from protocolle.protocolo.models import (Documento, DocumentoAnexo, Tramite,
                                          Tramite_Documento)
 
-import barcode
+# import barcode
 # from barcode.writer import ImageWriter
 
 # from django.forms.widgets import HiddenInput
+
+
+def get_instituicao_user(user):
+    iu = Instituicao_User.objects.get(user_id=user)
+    return iu
 
 
 def get_status_id(status):
@@ -196,7 +202,8 @@ class DocumentoAdmin(admin.ModelAdmin):
     get_protocolo.admin_order_field = 'protocolo'
 
     def get_data_recebimento(self, obj):
-        return obj.data_recebimento.strftime('%d/%m/%Y %H:%M')
+        data_recebimento = timezone.localtime(obj.data_recebimento)
+        return data_recebimento.strftime('%d/%m/%Y %H:%M')
     get_data_recebimento.allow_tags = True
     get_data_recebimento.short_description = 'Data do Recebimento'
     get_data_recebimento.admin_order_field = 'data_recebimento'
@@ -344,22 +351,23 @@ class TramiteAdmin(admin.ModelAdmin):
 
     def guia(self, request, id):
         tramite = Tramite.objects.get(pk=id)
-        zero_id = '%013d' % (tramite.pk,)
+        zero_id = '%08d' % (tramite.pk,)
 
-        EAN = barcode.get_barcode('Code39')
-        ean = EAN(zero_id)
+        # EAN = barcode.get_barcode('Code39')
+        # ean = EAN(zero_id)
 
         # ean = barcode.get('Code39',
         #                   zero_id,
         #                   writer=ImageWriter())
-        filename = ean.save('protocolle/core/static/ean13')
+        # filename = ean.save('protocolle/core/static/ean13')
 
         # tramite_documento = tramite_documento.objects.get(pk=id)
         context = {
             'title': 'Review Tramite: %s' % tramite.data_tramite,
             'tramite': tramite,
-            'codigo': filename.replace('protocolle/core', ''),
+            # 'codigo': filename.replace('protocolle/core', ''),
             'codigo_zero': zero_id,
+            'instituicao': get_instituicao_user(request.user.pk)
 
             # 'opts': self.model._meta,
             # 'root_path': self.admin_site.root_path,
@@ -369,22 +377,23 @@ class TramiteAdmin(admin.ModelAdmin):
 
     def etiqueta(self, request, id):
         tramite = Tramite.objects.get(pk=id)
-        zero_id = '%013d' % (tramite.pk,)
+        zero_id = '%08d' % tramite.pk
 
-        EAN = barcode.get_barcode('Code39')
-        ean = EAN(zero_id)
+        # EAN = barcode.get_barcode('Code39')
+        # ean = EAN(zero_id)
 
         # ean = barcode.get('Code39',
         #                   zero_id,
         #                   writer=ImageWriter())
-        filename = ean.save('protocolle/core/static/ean13')
+        # filename = ean.save('protocolle/core/static/ean13')
 
         # tramite_documento = tramite_documento.objects.get(pk=id)
         context = {
             'title': 'Review Tramite: %s' % tramite.data_tramite,
             'tramite': tramite,
-            'codigo': filename.replace('protocolle/core', ''),
+            # 'codigo': filename.replace('protocolle/core', ''),
             'codigo_zero': zero_id,
+            'instituicao': get_instituicao_user(request.user.pk)
 
             # 'opts': self.model._meta,
             # 'root_path': self.admin_site.root_path,
@@ -425,7 +434,8 @@ class TramiteAdmin(admin.ModelAdmin):
     get_numero_guia.admin_order_field = 'pk'
 
     def get_data_tramite(self, obj):
-        return obj.data_tramite.strftime('%d/%m/%Y %H:%M')
+        data_tramite = timezone.localtime(obj.data_tramite)
+        return data_tramite.strftime('%d/%m/%Y %H:%M')
     get_data_tramite.allow_tags = True
     get_data_tramite.short_description = 'Data do Tramite'
     get_data_tramite.admin_order_field = 'data_tramite'

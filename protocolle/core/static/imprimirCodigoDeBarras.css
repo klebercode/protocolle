@@ -1,0 +1,24 @@
+/* ===> INICIO DO CODIGO*/
+@CHARSET "UTF-8";
+
+ .divCode {
+     float: left;
+     height: 0.45in;   /*size*/
+ }
+
+.labelCode {
+    text-align: center;
+    font-size: small;
+}
+
+.bar1 {border-left: 1px solid black;}
+.bar2 {border-left: 2px solid black;}
+.bar3 {border-left: 3px solid black;}
+.bar4 {border-left: 4px solid black;}
+
+.space0    {margin-right: 0px;}
+.space1    {margin-right: 1px;}
+.space2    {margin-right: 2px;}
+.space3    {margin-right: 3px;}
+.space4    {margin-right: 4px;}
+/* ===> FIM DO CODIGO*/
