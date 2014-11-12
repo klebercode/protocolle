@@ -26,8 +26,7 @@ class DocumentoAutocomplete(autocomplete_light.AutocompleteModelBase):
         try:
             # busca os tramites relacionados a insituicao do usuario
             t = Tramite.objects.filter(
-                Q(origem_id=iu.instituicao) | Q(destino_id=iu.instituicao)
-                ).order_by('-id')[:1]
+                destino_id=iu.instituicao).order_by('-id')[:1]
             # busca os documentos relacionados aos tramites
             td = Tramite_Documento.objects.filter(tramite=t).order_by('-id')
 
@@ -36,8 +35,7 @@ class DocumentoAutocomplete(autocomplete_light.AutocompleteModelBase):
             #     Q(status__nome='Entregue'))
             self.choices = Documento.objects.filter(
                 Q(status__nome='Tramitando') |
-                Q(status__nome='Parado') |
-                Q(origem_id=iu.instituicao) |
+                Q(status__nome='Parado'),
                 Q(destino_id=iu.instituicao) |
                 Q(pk__in=td.all().values('protocolo_id')))
             # if not self.request.user.is_staff:
@@ -50,8 +48,7 @@ class DocumentoAutocomplete(autocomplete_light.AutocompleteModelBase):
             #     Q(destino_id=iu.instituicao))
             self.choices = Documento.objects.filter(
                 Q(status__nome='Tramitando') |
-                Q(status__nome='Parado') |
-                Q(origem_id=iu.instituicao) |
+                Q(status__nome='Parado'),
                 Q(destino_id=iu.instituicao))
 
         # self.choices = self.choices.filter(private=False)
