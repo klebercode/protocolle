@@ -112,7 +112,7 @@ class DocumentoAdmin(admin.ModelAdmin):
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
                     'numero', 'origem', 'interessado', 'status', 'operacao',
                     'action_link')
-    search_fields = ('get_data_recebimento', 'protocolo',
+    search_fields = ('data_recebimento', 'protocolo',
                      'tipo_documento__nome', 'numero', 'carater__nome',
                      'natureza__nome', 'origem__nome', 'interessado__nome',
                      'status__nome', 'data_documento', 'data_validade',
