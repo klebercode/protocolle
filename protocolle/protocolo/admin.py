@@ -194,6 +194,13 @@ class DocumentoAdmin(admin.ModelAdmin):
         obj.destino = iu.instituicao
         obj.save()
 
+        if not obj.origem == iu.instituicao and obj.destino == iu.instituicao:
+            messages.info(request, 'Não esqueça de arquivar o documento, \
+                          caso não se faça nescessário uma tramitação.')
+        else:
+            messages.info(request, 'Não esqueça de atualizar o status do \
+                          Documento.')
+
     def has_change_permission(self, request, obj=None):
         """
         Bloquear a edicao de documentos que estao com status diferente
