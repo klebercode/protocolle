@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from django.contrib import admin
+from django.contrib import messages
 from django.contrib.admin.options import TabularInline
 # from django.core.exceptions import PermissionDenied
 # from django import forms
@@ -41,7 +42,7 @@ def arquivar_doc(self, request, queryset):
     Antes de arquivar o documento o sistema verifica se existe algum tramite
     para o documento
     - se existir: sera verificado se o ultimo destino do
-    documento no tramite e igual a insittuicao do usuario
+    documento no tramite e igual a insituicao do usuario
     - se nao existir: sera verificado se o destino no cadastro do
     documento e igual a instituicao do usuario
     """
@@ -70,6 +71,13 @@ def arquivar_doc(self, request, queryset):
             if obj.status_id == get_status_id('Tramitando') \
                     or obj.status_id == get_status_id('Parado'):
                 queryset.update(status=get_status_id('Arquivado'))
+                messages.success(request, 'O Documento foi arquivado com \
+                                 sucesso.')
+            else:
+                messages.error(request, 'O Documento não está tramitando ou \
+                               parado.')
+        else:
+            messages.error(request, 'O Documento não está nesta instituição.')
 arquivar_doc.short_description = "Arquivar documento"
 
 
@@ -77,25 +85,73 @@ def desarquivar_doc(self, request, queryset):
     """
     Antes de desarquivar o documento o sistema verifica se existe algum tramite
     para o documento
-    - se existir: o status sera alterado para 'Tramitando'
-    - se nao existir: o status sera alterado para 'Parado'
+    - se existir: sera verificado se o ultimo destino do
+    documento no tramite e igual a insituicao do usuario e
+    o status sera alterado para 'Tramitando'
+    - se nao existir: sera verificado se o destino no cadastro do
+    documento e igual a instituicao do usuario e
+    o status sera alterado para 'Parado'
     """
     for obj in queryset:
-        if obj.status_id == get_status_id('Arquivado'):
-            if Tramite_Documento.objects.filter(protocolo_id=obj.pk):
-                # se existir tramite
-                sta = 'Tramitando'
+        iu = Instituicao_User.objects.get(user_id=request.user.pk)
+
+        try:
+            # se existir tramite
+            td = Tramite_Documento.objects.filter(
+                protocolo_id=obj.pk).order_by('-id')[0]
+            t = Tramite.objects.get(id=td.tramite_id)
+            destiny = t.destino_id
+
+        except:
+            # se nao existir tramite
+            destiny = obj.destino_id
+
+        if iu.instituicao_id == destiny:
+            if obj.status_id == get_status_id('Arquivado'):
+                if Tramite_Documento.objects.filter(protocolo_id=obj.pk):
+                    # se existir tramite
+                    sta = 'Tramitando'
+                else:
+                    # se nao existir tramite
+                    sta = 'Parado'
+                queryset.update(status=get_status_id(sta))
+                messages.success(request, 'O Documento foi desarquivado com \
+                                 sucesso.')
             else:
-                # se nao existir tramite
-                sta = 'Parado'
-            queryset.update(status=get_status_id(sta))
+                messages.error(request, 'O Documento não está arquivado.')
+        else:
+            messages.error(request, 'O Documento não está arquivado nesta \
+                           instituição.')
 desarquivar_doc.short_description = "Desarquivar documento"
 
 
 def entregar_doc(self, request, queryset):
     for obj in queryset:
-        if obj.status_id == get_status_id('Tramitando'):
-            queryset.update(status=get_status_id('Entregue'))
+        iu = Instituicao_User.objects.get(user_id=request.user.pk)
+
+        try:
+            # se existir tramite
+            td = Tramite_Documento.objects.filter(
+                protocolo_id=obj.pk).order_by('-id')[0]
+            t = Tramite.objects.get(id=td.tramite_id)
+            destiny = t.destino_id
+
+        except:
+            # se nao existir tramite
+            destiny = obj.destino_id
+
+        if not iu.instituicao_id == destiny:
+            if obj.status_id == get_status_id('Tramitando') \
+                    or obj.status_id == get_status_id('Parado'):
+                queryset.update(status=get_status_id('Entregue'))
+                messages.success(request, 'O Documento foi entregue com \
+                                 sucesso.')
+            else:
+                messages.error(request, 'O Documento não está tramitando ou \
+                               parado.')
+        else:
+            messages.error(request, 'O Documento está nesta instituição, \
+                           então você deve arquivá-lo.')
 entregar_doc.short_description = "Documento Entregue"
 
 
@@ -110,8 +166,8 @@ class DocumentoAdmin(admin.ModelAdmin):
     list_filter = ('tipo_documento', 'carater', 'natureza', 'origem',
                    'destino', 'interessado', 'status')
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
-                    'numero', 'origem', 'interessado', 'status', 'operacao',
-                    'action_link')
+                    'numero', 'origem', 'interessado', 'destino', 'status',
+                    'operacao', 'action_link')
     search_fields = ('data_recebimento', 'protocolo',
                      'tipo_documento__nome', 'numero', 'carater__nome',
                      'natureza__nome', 'origem__nome', 'interessado__nome',
