@@ -123,12 +123,12 @@ class Tramite_Documento(models.Model):
     folhas = models.IntegerField(_(u'Número de Folhas'), null=True, blank=True)
 
     class Meta:
-        verbose_name = _(u'Documento do Tramite')
-        verbose_name_plural = _(u'Documentos do Tramite')
+        verbose_name = _(u'Documento do Trâmite')
+        verbose_name_plural = _(u'Documentos do Trâmite')
 
 
 class Tramite(models.Model):
-    data_tramite = models.DateTimeField(_(u'Data do Tramite'),
+    data_tramite = models.DateTimeField(_(u'Data do Trâmite'),
                                         auto_now_add=True)
     origem = models.ForeignKey(Instituicao,
                                verbose_name=_(u'Instituição Origem'),
@@ -188,8 +188,8 @@ class Tramite(models.Model):
         return unicode(self.pk)
 
     class Meta:
-        verbose_name = u'Tramite'
-        verbose_name_plural = u'Tramites'
+        verbose_name = _(u'Trâmite')
+        verbose_name_plural = _(u'Trâmites')
 
 
 def status_changed(sender, instance, **kwargs):

@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 
 class Navbar(object):
     nodes = (
-        ('Tramites', {'nodes': (
+        ('Trâmites', {'nodes': (
             ('Documentos', {
                 'url': reverse_lazy('admin:protocolo_tramite_changelist'),
                 'perm': 'protocolo.change_tramite',

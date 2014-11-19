@@ -495,7 +495,7 @@ class TramiteAdmin(admin.ModelAdmin):
         data_tramite = timezone.localtime(obj.data_tramite)
         return data_tramite.strftime('%d/%m/%Y %H:%M')
     get_data_tramite.allow_tags = True
-    get_data_tramite.short_description = 'Data do Tramite'
+    get_data_tramite.short_description = 'Data do Trâmite'
     get_data_tramite.admin_order_field = 'data_tramite'
 
     def queryset(self, request):
