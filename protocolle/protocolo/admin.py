@@ -163,6 +163,7 @@ class DocumentoAnexoInline(TabularInline):
 
 class DocumentoAdmin(admin.ModelAdmin):
     readonly_fields = ('status', 'protocolo',)
+    list_per_page = 15
     list_filter = ('tipo_documento', 'carater', 'natureza', 'origem',
                    'destino', 'interessado', 'status')
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
@@ -336,6 +337,7 @@ class Tramite_DocumentoInline(admin.TabularInline):
 
 class TramiteAdmin(admin.ModelAdmin):
     list_filter = ('origem', 'origem_setor', 'destino', 'destino_setor')
+    list_per_page = 15
     list_display = ('get_numero_guia', 'get_data_tramite', 'origem',
                     'origem_setor', 'destino', 'destino_setor',
                     'get_documentos', 'action_link')

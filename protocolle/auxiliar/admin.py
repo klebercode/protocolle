@@ -38,6 +38,7 @@ class InstituicaoAdmin(admin.ModelAdmin):
                        'complemento', 'cep', 'cidade', 'uf')
         }),
     )
+    list_per_page = 15
     list_display = ['nome', 'tipo_instituicao', 'grupo', 'email', 'fone']
     list_filter = ['tipo_instituicao', 'grupo', 'bairro', 'cidade', 'uf']
     search_fields = ['nome', 'tipo_instituicao__nome', 'grupo__nome',
@@ -68,6 +69,7 @@ class InstituicaoAdmin(admin.ModelAdmin):
 
 class SetorAdmin(admin.ModelAdmin):
     fields = ['instituicao', 'nome', 'sigla', 'responsavel']
+    list_per_page = 15
     list_display = ['nome', 'sigla', 'instituicao', 'responsavel']
     list_filter = ['instituicao', 'responsavel']
     search_fields = ['nome', 'sigla', 'instituicao__nome', 'responsavel__nome']
@@ -97,6 +99,7 @@ class Instituicao_UserInline(admin.TabularInline):
 
 
 class Instituicao_UserAdmin(UserAdmin):
+    list_per_page = 15
     list_display = UserAdmin.list_display + ('get_instituicao',)
     inlines = (Instituicao_UserInline,)
 

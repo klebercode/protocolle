@@ -8,18 +8,21 @@ from protocolle.core.models import (TipoDocumento, Carater, Natureza,
 
 class TipoDocumentoAdmin(admin.ModelAdmin):
     fields = ['nome']
+    list_per_page = 15
     list_display = ['nome']
     search_fields = ['nome']
 
 
 class TipoInstituicaoAdmin(admin.ModelAdmin):
     fields = ['nome']
+    list_per_page = 15
     list_display = ['nome']
     search_fields = ['nome']
 
 
 class GrupoAdmin(admin.ModelAdmin):
     fields = ['nome', 'tipo_instituicao']
+    list_per_page = 15
     list_display = ['nome', 'tipo_instituicao']
     list_filter = ['tipo_instituicao']
     search_fields = ['nome', 'tipo_instituicao__nome']
@@ -27,18 +30,21 @@ class GrupoAdmin(admin.ModelAdmin):
 
 class CaraterAdmin(admin.ModelAdmin):
     fields = ['nome']
+    list_per_page = 15
     list_display = ['nome']
     search_fields = ['nome']
 
 
 class NaturezaAdmin(admin.ModelAdmin):
     fields = ['nome']
+    list_per_page = 15
     list_display = ['nome']
     search_fields = ['nome']
 
 
 class StatusAdmin(admin.ModelAdmin):
     fields = ['nome']
+    list_per_page = 15
     list_display = ['nome']
     search_fields = ['nome']
 

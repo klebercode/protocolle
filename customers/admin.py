@@ -42,6 +42,7 @@ create_admin.short_description = "Criar administrador"
 
 
 class ClientAdmin(admin.ModelAdmin):
+    list_per_page = 15
     list_display = ['name', 'institute']
     ordering = ['name']
     actions = [create_admin]
