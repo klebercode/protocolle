@@ -45,6 +45,21 @@ class Documento(models.Model):
                                related_name='DocSituacoes', editable=False)
     observacao = models.TextField(_(u'Observação'), null=True, blank=True)
 
+    def get_anexos(self):
+        """
+        Lista todos os anexos do documento
+        """
+        out = []
+        for k, item in enumerate(
+                DocumentoAnexo.objects.filter(documento=self.pk)):
+            out.append(
+                '<a href="%s" target="_Blank">Anexo %s</a><br>' %
+                (item.arquivo.url, k + 1)
+            )
+        return '\n'.join(out)
+    get_anexos.allow_tags = True
+    get_anexos.short_description = _(u'Anexos')
+
     def save(self, *args, **kwargs):
         """
         Funcao para gerar o número de protocolo
