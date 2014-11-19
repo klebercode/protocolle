@@ -39,7 +39,7 @@ class Documento(models.Model):
                                 verbose_name=_(u'Instituição Destino'),
                                 related_name='DocInstituicoesDes')
     assunto = models.TextField(_(u'Assunto'))
-    interessado = models.ForeignKey(Pessoa, verbose_name=_(u'Interessado'),
+    interessado = models.ForeignKey(Pessoa, verbose_name=_(u'Remetente'),
                                     related_name='DocPessoasRem')
     status = models.ForeignKey(Status, verbose_name=_(u'Status'),
                                related_name='DocSituacoes', editable=False)
