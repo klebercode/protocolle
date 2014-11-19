@@ -54,14 +54,12 @@
 					<th>
 						<p class="font-gra">{{ instituicao.instituicao }}</p>
                         <!--<p><img src="{{ codigo }}" width="200"></p>-->
-                        <p>
-                        	<script type="text/javascript">
-				                var codebar = '{{ codigo_zero }}';
-				                var barCode = code128(codebar, '273', 'A');
-				                //alert(barCode);
-				                window.document.write(barCode);
-							</script>
-                        </p>
+                    	<script type="text/javascript">
+			                var codebar = '{{ codigo_zero }}';
+			                var barCode = code128(codebar, '273', 'A');
+			                //alert(barCode);
+			                window.document.write(barCode);
+						</script>
 					</th>
 				</tr>
 			</thead>

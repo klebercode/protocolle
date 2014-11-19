@@ -54,7 +54,8 @@ function code128(code, allSpace, barcodeType) {
 
    var margin = (parseInt(allSpace)-codeBarSpace)/2;
 
-   return '<div width="' + codeBarSpace + 'px" style="margin: 0 ' + margin + '; height: 50px;">' + sb.join('') + '</div><label class="labelCode">' + code + '</label>';
+   //return '<div width="' + codeBarSpace + 'px" style="margin: 0 ' + margin + '; height: 50px;">' + sb.join('') + '</div><label class="labelCode">' + code + '</label>';
+   return '<div style="width:' + codeBarSpace + 'px; height: 50px; margin: auto; padding-top: 10px;">' + sb.join('') + '</div><label class="labelCode">' + code + '</label>';
 }
 
 function code128Detect(code) {
