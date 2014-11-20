@@ -161,14 +161,36 @@ class DocumentoAnexoInline(TabularInline):
     extra = 1
 
 
+def truncate_origem(obj):
+    text = str(obj.origem)
+    return (text[:30] + '...') if len(text) > 30 else text
+truncate_origem.short_description = 'Instituição de Origem'
+truncate_origem.admin_order_field = 'origem'
+
+
+def truncate_destino(obj):
+    text = str(obj.destino)
+    return (text[:30] + '...') if len(text) > 30 else text
+truncate_destino.short_description = 'Instituição de Destino'
+truncate_destino.admin_order_field = 'destino'
+
+
+def truncate_remetente(obj):
+    text = str(obj.remetente)
+    return (text[:30] + '...') if len(text) > 30 else text
+truncate_remetente.short_description = 'Remetente'
+truncate_remetente.admin_order_field = 'remetente'
+
+
 class DocumentoAdmin(admin.ModelAdmin):
     readonly_fields = ('status', 'protocolo',)
     list_per_page = 15
     list_filter = ('tipo_documento', 'carater', 'natureza', 'origem',
                    'destino', 'interessado', 'status')
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
-                    'numero', 'origem', 'interessado', 'destino', 'status',
-                    'operacao', 'get_anexos', 'action_link')
+                    'numero', truncate_origem, truncate_remetente,
+                    truncate_destino, 'status', 'operacao', 'get_anexos',
+                    'action_link')
     search_fields = ('data_recebimento', 'protocolo',
                      'tipo_documento__nome', 'numero', 'carater__nome',
                      'natureza__nome', 'origem__nome', 'interessado__nome',
