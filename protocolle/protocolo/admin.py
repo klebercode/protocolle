@@ -176,10 +176,10 @@ truncate_destino.admin_order_field = 'destino'
 
 
 def truncate_remetente(obj):
-    text = str(obj.remetente)
+    text = str(obj.interessado)
     return (text[:30] + '...') if len(text) > 30 else text
 truncate_remetente.short_description = 'Remetente'
-truncate_remetente.admin_order_field = 'remetente'
+truncate_remetente.admin_order_field = 'interessado'
 
 
 class DocumentoAdmin(admin.ModelAdmin):
