@@ -53,7 +53,7 @@ class Documento(models.Model):
         for k, item in enumerate(
                 DocumentoAnexo.objects.filter(documento=self.pk)):
             out.append(
-                '<a href="%s" target="_Blank">Anexo-%s</a><br>' %
+                '<a href="%s" target="_Blank">Arq. %s</a><br>' %
                 (item.arquivo.url, k + 1)
             )
         return '\n'.join(out)
