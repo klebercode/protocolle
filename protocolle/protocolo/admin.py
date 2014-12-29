@@ -167,7 +167,7 @@ class DocumentoAdmin(admin.ModelAdmin):
     list_filter = ('tipo_documento', 'carater', 'natureza', 'origem',
                    'destino', 'interessado', 'status')
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
-                    'numero', 'truncate_origem',
+                    'numero', 'truncate_origem', 'truncate_remetente',
                     'truncate_destino', 'status', 'operacao', 'get_anexos',
                     'action_link')
     search_fields = ('data_recebimento', 'protocolo',
@@ -274,19 +274,19 @@ class DocumentoAdmin(admin.ModelAdmin):
     get_data_recebimento.admin_order_field = 'data_recebimento'
 
     def truncate_origem(self, obj):
-        text = str(obj.origem)
+        text = str(obj.origem).decode('utf8')
         return (text[:30] + '...') if len(text) > 30 else text
     truncate_origem.short_description = 'Instituição de Origem'
     truncate_origem.admin_order_field = 'origem'
 
     def truncate_destino(self, obj):
-        text = str(obj.destino)
+        text = str(obj.destino).decode('utf8')
         return (text[:30] + '...') if len(text) > 30 else text
     truncate_destino.short_description = 'Instituição de Destino'
     truncate_destino.admin_order_field = 'destino'
 
     def truncate_remetente(self, obj):
-        text = str(obj.interessado)
+        text = str(obj.interessado).decode('utf8')
         return (text[:30] + '...') if len(text) > 30 else text
     truncate_remetente.short_description = 'Remetente'
     truncate_remetente.admin_order_field = 'interessado'
