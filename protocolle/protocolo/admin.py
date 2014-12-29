@@ -167,7 +167,7 @@ class DocumentoAdmin(admin.ModelAdmin):
     list_filter = ('tipo_documento', 'carater', 'natureza', 'origem',
                    'destino', 'interessado', 'status')
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
-                    'numero', 'truncate_origem', 'truncate_remetente',
+                    'numero', 'truncate_origem',
                     'truncate_destino', 'status', 'operacao', 'get_anexos',
                     'action_link')
     search_fields = ('data_recebimento', 'protocolo',
