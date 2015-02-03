@@ -27,6 +27,10 @@ from protocolle.protocolo.models import (Documento, DocumentoAnexo, Tramite,
 # from django.forms.widgets import HiddenInput
 
 
+def get_superuser(request):
+    return request.user.is_superuser
+
+
 def get_instituicao_user(user):
     iu = Instituicao_User.objects.get(user_id=user)
     return iu
@@ -237,23 +241,25 @@ class DocumentoAdmin(admin.ModelAdmin):
         # url_name = obj._meta.module_name
         # data_id = obj.id
 
+        action_buttons = """
+            <nav class="grp-pagination">
+                <ul>
+                    <li>
+                        <a href="/{0}/{1}/{2}" \
+                        class="grp-results">Editar</a>
+                        <a href="/{0}/{1}/{2}/delete" \
+                        class="grp-results grp-delete-link">Deletar</a>
+                    </li>
+                </ul>
+            </nav>
+        """.format(obj._meta.app_label,
+                   obj._meta.module_name,
+                   obj.id,)
+
         if obj.status_id == get_status_id('Parado'):
-            return """
-                <nav class="grp-pagination">
-                    <ul>
-                        <li>
-                            <a href="/{0}/{1}/{2}" \
-                            class="grp-results">Editar</a>
-                            <a href="/{0}/{1}/{2}/delete" \
-                            class="grp-results grp-delete-link">Deletar</a>
-                        </li>
-                    </ul>
-                </nav>
-            """.format(obj._meta.app_label,
-                       obj._meta.module_name,
-                       obj.id,)
+            return action_buttons
         else:
-            return """"""
+            return ""
     action_link.allow_tags = True
     action_link.short_description = 'Ações'
 
