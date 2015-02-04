@@ -179,6 +179,14 @@ class DocumentoAdmin(admin.ModelAdmin):
                      'natureza__nome', 'origem__nome', 'interessado__nome',
                      'status__nome', 'data_documento', 'data_validade',
                      'destino__nome', 'assunto', 'observacao')
+    fieldsets = (
+        (None, {
+            'fields': (('operacao', 'protocolo', 'status'), ('tipo_documento',
+                       'numero'), ('data_documento', 'data_validade',
+                       'folhas'), ('carater', 'natureza'),
+                       'assunto', 'interessado', 'observacao')
+        }),
+    )
     date_hierarchy = 'data_recebimento'
     raw_id_fields = ('origem', 'destino', 'interessado')
 
@@ -212,7 +220,10 @@ class DocumentoAdmin(admin.ModelAdmin):
         de 'Parado'
         """
         if obj is not None and obj.status_id != get_status_id('Parado'):
-            return False
+            if not request.user.is_superuser:
+                return False
+            else:
+                return True
         return super(DocumentoAdmin,
                      self).has_change_permission(request, obj=obj)
 
