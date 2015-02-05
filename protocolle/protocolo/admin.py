@@ -183,7 +183,7 @@ class DocumentoAdmin(admin.ModelAdmin):
         (None, {
             'fields': (('operacao', 'protocolo', 'status'), ('tipo_documento',
                        'numero'), ('data_documento', 'data_validade',
-                       'folhas'), ('carater', 'natureza'),
+                       'folhas'), ('carater', 'natureza'), 'origem',
                        'assunto', 'interessado', 'observacao')
         }),
     )
