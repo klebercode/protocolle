@@ -1,7 +1,6 @@
 # coding: utf-8
 
-from django.contrib import admin
-from django.contrib import messages
+from django.contrib import admin, messages
 from django.contrib.admin.options import TabularInline
 # from django.core.exceptions import PermissionDenied
 # from django import forms

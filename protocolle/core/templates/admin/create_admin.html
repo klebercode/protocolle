@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+
+<!-- LOADING -->
+{% load i18n l10n admin_urls %}
+{% load url from future %}
+
+<!-- TITLE -->
+{% block title %}{{ title }}{% endblock %}
+
+<!-- COLTYPE/BODYCLASS -->
+{% block content-class %}{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+    <ul class="grp-horizontal-list">
+        <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li>
+        <li><a href="{% url 'admin:app_list' app_label=app_label %}">{{ app_label|capfirst|escape }}</a></li>
+        <li><a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a></li>
+        <li>{{ title }}</li>
+    </ul>
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="g-d-c">
+        <div class="g-d-12">
+            <div class="grp-rte">
+                <p>Por favor, informe os dados de acesso para o administrador do cliente.</p>
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                <fieldset class="grp-module">
+                    {% for field in create_form %}
+                        {% if not field.name == '_selected_action' %}
+                        <div class="grp-row l-2c-fluid l-d-4{% if field.errors %} grp-errors{% endif %}">
+                            <div class="c-1"><label for="{{ field.id }}" class="required">{{ field.label }}</label></div>
+                            <div class="c-2">
+                                {{ field }}
+                                {{ field.erros }}
+                            </div>
+                        </div>
+                        {% else %}
+                        {{ field }}
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
+
+                <div class="grp-module grp-submit-row grp-fixed-footer">
+                    <input type="hidden" name="action" value="create_admin">
+                    <ul>
+                        <li class="grp-float-left"><a href="." class="grp-button grp-cancel-link">{% trans "Cancel" %}</a></li>
+                        <li><input type="submit" name="apply" value="Criar Administrador" class="grp-default" /></li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
