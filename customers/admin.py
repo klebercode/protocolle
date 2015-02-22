@@ -25,8 +25,6 @@ def create_admin(self, request, queryset):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
-            print "%s - %s - %s" % (username, email, password)
-
             for obj in queryset:
                 connection.set_schema(obj.schema_name, include_public=False)
 
