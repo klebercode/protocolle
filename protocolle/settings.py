@@ -128,7 +128,7 @@ WSGI_APPLICATION = 'protocolle.wsgi.application'
 DATABASES = {
     'default': config(
         'DATABASE_URL',
-        default='postgres://postgres:123@localhost/protocolle',
+        default='postgres://admin:123@localhost/protocolle',
         cast=db_url),
 }
 DATABASES['default']['ENGINE'] = 'tenant_schemas.postgresql_backend'
@@ -146,16 +146,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# DEFAULT_FROM_EMAIL = 'Polpa Canaa <no-reply@polpacanaa.com.br>'
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
-# EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
-# EMAIL_HOST = config('EMAIL_HOST', default='localhost')
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 
 
 # Templates
@@ -198,24 +188,15 @@ AUTH_PROFILE_MODULE = 'auxiliar.Instituicao_User'
 # Amazon S3 settings
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-# os.environ['AWS_STORAGE_BUCKET_NAME']
-AWS_STORAGE_BUCKET_NAME = 'ow7-protocolle'
-# os.environ['AWS_ACCESS_KEY_ID']
-AWS_ACCESS_KEY_ID = 'AKIAJNKUAC3QKH3MWSNQ'
-# os.environ['AWS_SECRET_ACCESS_KEY']
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 
-# STATICFILES_STORAGE = 'protocolle.s3utils.StaticRootS3BotoStorage'
-
-# STATIC_ROOT = BASE_DIR.child('staticfiles')
-
-# STATIC_URL = 'http://protocolle.s3-website-us-west-1.amazonaws.com/static/'
-
-DEFAULT_FILE_STORAGE = 'protocolle.s3utils.MediaRootS3BotoStorage'
+DEFAULT_FILE_STORAGE = config('DEFAULT_FILE_STORAGE')
 
 MEDIA_ROOT = BASE_DIR.child('media')
 
-MEDIA_URL = 'http://ow7-protocolle.s3-website-us-west-1.amazonaws.com/media/'
+MEDIA_URL = config('MEDIA_URL')
 
 
 STATIC_ROOT = BASE_DIR.child('staticfiles')
