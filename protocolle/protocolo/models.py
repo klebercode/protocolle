@@ -76,7 +76,7 @@ class Documento(models.Model):
                 i = Documento.objects.all().order_by('-id')[0]
                 k = i.id+1
             # inseri um formato com zeros e ano (Ex: 00000002/2014)
-            self.protocolo = '%08d/%d' % (k, now.year+1)
+            self.protocolo = '%08d/%d' % (k, now.year)
 
             s = Status.objects.get(nome='Parado')
             self.status = s
