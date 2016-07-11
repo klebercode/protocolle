@@ -43,7 +43,7 @@ def atualiza_protocolo_num_2(modeladmin, request, queryset):
     for object in queryset:
         object.protocolo = object.protocolo.replace('2015', '2016')
         object.update()
-duplicate_event.short_description = "Atualiza Número do Protocolo 2"
+atualiza_protocolo_num_2.short_description = "Atualiza Número do Protocolo 2"
 
 
 def atualiza_protocolo_num(self, request, queryset):
