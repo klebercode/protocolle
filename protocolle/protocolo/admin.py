@@ -42,10 +42,10 @@ def get_status_id(status):
 def atualiza_protocolo_num(self, request, queryset):
     """docstring for atualiza_protocolo_num"""
     # if request.user.is_superuser:
-    # for obj in queryset:
+    for obj in queryset:
         # obj.protocolo = obj.protocolo.replace('2015', '2016')
         # obj.save()
-    queryset.update(documento=self.documento.replace('2016', '2015'))
+        queryset.update(documento=obj.documento.replace('2016', '2015'))
 atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
 
 
