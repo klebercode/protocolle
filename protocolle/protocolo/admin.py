@@ -41,12 +41,10 @@ def get_status_id(status):
 
 
 def atualiza_protocolo_num(self, request, queryset):
-    """docstring for atualiza_protocolo_num"""
-    # if request.user.is_superuser:
+    """Corrige bug do ano no numero do protocolo"""
     for obj in queryset:
         obj.protocolo = string.replace(obj.protocolo, '2015', '2016')
         obj.save()
-    # queryset.update(numero=)
 atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
 
 
@@ -206,8 +204,7 @@ class DocumentoAdmin(admin.ModelAdmin):
 
     inlines = [DocumentoAnexoInline]
 
-    actions = [arquivar_doc, desarquivar_doc, entregar_doc,
-               atualiza_protocolo_num]
+    actions = [arquivar_doc, desarquivar_doc, entregar_doc]
 
     def save_model(self, request, obj, form, change):
         """
@@ -393,9 +390,9 @@ class Tramite_DocumentoInline(admin.TabularInline):
 class TramiteAdmin(admin.ModelAdmin):
     list_filter = ('origem', 'origem_setor', 'destino', 'destino_setor')
     list_per_page = 15
-    list_display = ('get_numero_guia', 'get_data_tramite', 'origem',
-                    'origem_setor', 'destino', 'destino_setor',
-                    'get_documentos', 'action_link')
+    list_display = ('get_numero_guia', 'get_data_tramite', 'truncate_origem',
+                    'truncate_origem_setor', 'truncate_destino',
+                    'truncate_destino_setor', 'get_documentos', 'action_link')
     search_fields = ('id', 'data_tramite', 'origem__nome',
                      'origem_setor__nome', 'destino__nome',
                      'destino_setor__nome', 'protocolo__protocolo',)
@@ -556,6 +553,30 @@ class TramiteAdmin(admin.ModelAdmin):
     get_data_tramite.allow_tags = True
     get_data_tramite.short_description = 'Data do Trâmite'
     get_data_tramite.admin_order_field = 'data_tramite'
+
+    def truncate_origem(self, obj):
+        text = str(obj.origem).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_origem.short_description = 'Instituição de Origem'
+    truncate_origem.admin_order_field = 'origem'
+
+    def truncate_destino(self, obj):
+        text = str(obj.destino).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_destino.short_description = 'Instituição de Destino'
+    truncate_destino.admin_order_field = 'destino'
+
+    def truncate_origem_setor(self, obj):
+        text = str(obj.origem_setor).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_origem_setor.short_description = 'Setor Origem'
+    truncate_origem_setor.admin_order_field = 'origem_setor'
+
+    def truncate_destino_setor(self, obj):
+        text = str(obj.destino_setor).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_destino_setor.short_description = 'Setor Destino'
+    truncate_destino_setor.admin_order_field = 'destino_setor'
 
     def queryset(self, request):
         """
