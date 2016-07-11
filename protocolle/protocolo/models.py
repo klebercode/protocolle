@@ -20,7 +20,7 @@ class Documento(models.Model):
                                        verbose_name=_(u'Tipo de Documento'),
                                        related_name='DocTiposDocumento')
     protocolo = models.CharField(_(u'Número do Protocolo'), max_length=100,
-                                 unique=True, default=0, editable=True)
+                                 unique=True, default=0, editable=False)
     numero = models.CharField(_(u'Número do Documento'), max_length=100)
     data_recebimento = models.DateTimeField(_(u'Data de Recebimento'),
                                             auto_now_add=True)
