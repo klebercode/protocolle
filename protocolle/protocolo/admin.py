@@ -45,7 +45,7 @@ def atualiza_protocolo_num(self, request, queryset):
     # for obj in queryset:
         # obj.numero = 33333333 # obj.numero.replace('2015', '2016')
         # obj.save()
-    queryset.update(numero=self.numero.replace('2016', '2015'))
+    queryset.update(numero=333333)
 atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
 
 
