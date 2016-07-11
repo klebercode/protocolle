@@ -13,6 +13,7 @@ from django.utils import timezone
 
 import autocomplete_light
 # import autocomplete_light_registry
+import string
 
 from protocolle.core.models import Status
 from protocolle.auxiliar.models import Instituicao_User
@@ -43,7 +44,7 @@ def atualiza_protocolo_num(self, request, queryset):
     """docstring for atualiza_protocolo_num"""
     # if request.user.is_superuser:
     for obj in queryset:
-        obj.numero = obj.numero + "a"
+        obj.protocolo = string.replace(obj.protocolo, '2015', '2016')
         obj.save()
     # queryset.update(numero=)
 atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
