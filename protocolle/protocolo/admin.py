@@ -39,6 +39,13 @@ def get_status_id(status):
     return s.pk
 
 
+def atualiza_protocolo_num_2(modeladmin, request, queryset):
+    for object in queryset:
+        object.protocolo = object.protocolo.replace('2015', '2016')
+        object.update()
+duplicate_event.short_description = "Atualiza Número do Protocolo 2"
+
+
 def atualiza_protocolo_num(self, request, queryset):
     """docstring for atualiza_protocolo_num"""
     if request.user.is_superuser:
@@ -206,7 +213,7 @@ class DocumentoAdmin(admin.ModelAdmin):
     inlines = [DocumentoAnexoInline]
 
     actions = [arquivar_doc, desarquivar_doc, entregar_doc,
-               atualiza_protocolo_num]
+               atualiza_protocolo_num, atualiza_protocolo_num_2]
 
     def save_model(self, request, obj, form, change):
         """
