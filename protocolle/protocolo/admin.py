@@ -39,11 +39,12 @@ def get_status_id(status):
     return s.pk
 
 
-def atualiza_protocolo_num(self, request, obj):
+def atualiza_protocolo_num(self, request, queryset):
     """docstring for atualiza_protocolo_num"""
     # if request.user.is_superuser:
-    obj.numero += 1
-    obj.save()
+    for obj in queryset:
+        obj.numero += 1
+        obj.save()
     # queryset.update(numero=request.POST["numero"]+1)
 atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
 
