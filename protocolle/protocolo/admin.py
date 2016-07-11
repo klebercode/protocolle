@@ -43,8 +43,9 @@ def atualiza_protocolo_num(self, request, queryset):
     """docstring for atualiza_protocolo_num"""
     if request.user.is_superuser:
         for obj in queryset:
-            obj.protocolo = obj.protocolo.replace('2015', '2016')
-            obj.save()
+            # obj.protocolo = obj.protocolo.replace('2015', '2016')
+            # obj.save()
+            queryset.update(protocolo=self.protocolo.replate('2015', '2016'))
 atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
 
 
