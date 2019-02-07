@@ -171,7 +171,7 @@ class DocumentoAdmin(admin.ModelAdmin):
                    'destino', 'interessado', 'status')
     list_display = ('get_protocolo', 'get_data_recebimento', 'tipo_documento',
                     'numero', 'truncate_origem', 'truncate_remetente',
-                    'truncate_destino', 'status', 'operacao', 'get_anexos',
+                    'status', 'operacao', 'get_anexos',
                     'action_link')
     search_fields = ('data_recebimento', 'protocolo',
                      'tipo_documento__nome', 'numero', 'carater__nome',
