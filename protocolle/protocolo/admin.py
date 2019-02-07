@@ -1,5 +1,4 @@
 # coding: utf-8
-
 from django.contrib import admin, messages
 from django.contrib.admin.options import TabularInline
 # from django.core.exceptions import PermissionDenied
@@ -14,6 +13,7 @@ from django.utils import timezone
 
 import autocomplete_light
 # import autocomplete_light_registry
+import string
 
 from protocolle.core.models import Status
 from protocolle.auxiliar.models import Instituicao_User
@@ -38,6 +38,14 @@ def get_instituicao_user(user):
 def get_status_id(status):
     s = Status.objects.get(nome=status)
     return s.pk
+
+
+def atualiza_protocolo_num(self, request, queryset):
+    """Corrige bug do ano no numero do protocolo"""
+    for obj in queryset:
+        obj.protocolo = string.replace(obj.protocolo, '2015', '2016')
+        obj.save()
+atualiza_protocolo_num.short_description = 'Atualiza Número do Protocolo'
 
 
 def arquivar_doc(self, request, queryset):
@@ -72,7 +80,7 @@ def arquivar_doc(self, request, queryset):
 
         if iu.instituicao_id == destiny:
             if obj.status_id == get_status_id('Tramitando') \
-                    or obj.status_id == get_status_id('Parado'):
+               or obj.status_id == get_status_id('Parado'):
                 queryset.update(status=get_status_id('Arquivado'))
                 messages.success(request, 'O Documento foi arquivado com \
                                  sucesso.')
@@ -81,7 +89,7 @@ def arquivar_doc(self, request, queryset):
                                parado.')
         else:
             messages.error(request, 'O Documento não está nesta instituição.')
-arquivar_doc.short_description = "Arquivar documento"
+            arquivar_doc.short_description = "Arquivar documento"
 
 
 def desarquivar_doc(self, request, queryset):
@@ -117,15 +125,15 @@ def desarquivar_doc(self, request, queryset):
                 else:
                     # se nao existir tramite
                     sta = 'Parado'
-                queryset.update(status=get_status_id(sta))
-                messages.success(request, 'O Documento foi desarquivado com \
-                                 sucesso.')
+                    queryset.update(status=get_status_id(sta))
+                    messages.success(request, 'O Documento foi desarquivado com \
+                                     sucesso.')
             else:
                 messages.error(request, 'O Documento não está arquivado.')
         else:
             messages.error(request, 'O Documento não está arquivado nesta \
                            instituição.')
-desarquivar_doc.short_description = "Desarquivar documento"
+            desarquivar_doc.short_description = "Desarquivar documento"
 
 
 def entregar_doc(self, request, queryset):
@@ -145,7 +153,7 @@ def entregar_doc(self, request, queryset):
 
         if not iu.instituicao_id == destiny:
             if obj.status_id == get_status_id('Tramitando') \
-                    or obj.status_id == get_status_id('Parado'):
+               or obj.status_id == get_status_id('Parado'):
                 queryset.update(status=get_status_id('Entregue'))
                 messages.success(request, 'O Documento foi entregue com \
                                  sucesso.')
@@ -155,7 +163,7 @@ def entregar_doc(self, request, queryset):
         else:
             messages.error(request, 'O Documento está nesta instituição, \
                            então você deve arquivá-lo.')
-entregar_doc.short_description = "Documento Entregue"
+            entregar_doc.short_description = "Documento Entregue"
 
 
 class DocumentoAnexoInline(TabularInline):
@@ -180,10 +188,11 @@ class DocumentoAdmin(admin.ModelAdmin):
                      'destino__nome', 'assunto', 'observacao')
     fieldsets = (
         (None, {
-            'fields': (('operacao', 'protocolo', 'status'), ('tipo_documento',
-                       'numero'), ('data_documento', 'data_validade',
-                       'folhas'), ('carater', 'natureza'), 'origem',
-                       'assunto', 'interessado', 'observacao')
+            'fields': (('operacao', 'protocolo', 'status'),
+                       ('tipo_documento', 'numero'),
+                       ('data_documento', 'data_validade', 'folhas'),
+                       ('carater', 'natureza'), 'origem', 'assunto',
+                       'interessado', 'observacao')
         }),
     )
     date_hierarchy = 'data_recebimento'
@@ -217,6 +226,7 @@ class DocumentoAdmin(admin.ModelAdmin):
         """
         Bloquear a edicao de documentos que estao com status diferente
         de 'Parado'
+        E testa se é super usuário
         """
         if obj is not None and obj.status_id != get_status_id('Parado'):
             if not request.user.is_superuser:
@@ -240,7 +250,7 @@ class DocumentoAdmin(admin.ModelAdmin):
         # if request.user.username[0].upper() != 'J':
         if 'delete_selected' in actions:
             del actions['delete_selected']
-        return actions
+            return actions
 
     def action_link(self, obj):
         """
@@ -252,16 +262,16 @@ class DocumentoAdmin(admin.ModelAdmin):
         # data_id = obj.id
 
         action_buttons = """
-            <nav class="grp-pagination">
-                <ul>
-                    <li>
-                        <a href="/{0}/{1}/{2}" \
-                        class="grp-results">Editar</a>
-                        <a href="/{0}/{1}/{2}/delete" \
-                        class="grp-results grp-delete-link">Deletar</a>
-                    </li>
-                </ul>
-            </nav>
+        <nav class="grp-pagination">
+        <ul>
+        <li>
+        <a href="/{0}/{1}/{2}" \
+                class="grp-results">Editar</a>
+        <a href="/{0}/{1}/{2}/delete" \
+                class="grp-results grp-delete-link">Deletar</a>
+        </li>
+        </ul>
+        </nav>
         """.format(obj._meta.app_label,
                    obj._meta.module_name,
                    obj.id,)
@@ -322,7 +332,7 @@ class DocumentoAdmin(admin.ModelAdmin):
             # busca os tramites relacionados a insituicao do usuario
             t = Tramite.objects.filter(
                 Q(origem_id=iu.instituicao) | Q(destino_id=iu.instituicao)
-                ).order_by('-id')
+            ).order_by('-id')
             # busca os documentos relacionados aos tramites
             td = Tramite_Documento.objects.filter(tramite=t).order_by('-id')
 
@@ -380,16 +390,16 @@ class Tramite_DocumentoInline(admin.TabularInline):
 class TramiteAdmin(admin.ModelAdmin):
     list_filter = ('origem', 'origem_setor', 'destino', 'destino_setor')
     list_per_page = 15
-    list_display = ('get_numero_guia', 'get_data_tramite', 'origem',
-                    'origem_setor', 'destino', 'destino_setor',
-                    'get_documentos', 'action_link')
+    list_display = ('get_numero_guia', 'get_data_tramite', 'truncate_origem',
+                    'truncate_origem_setor', 'truncate_destino',
+                    'truncate_destino_setor', 'get_documentos', 'action_link')
     search_fields = ('id', 'data_tramite', 'origem__nome',
                      'origem_setor__nome', 'destino__nome',
                      'destino_setor__nome', 'protocolo__protocolo',)
     date_hierarchy = 'data_tramite'
     # filter_horizontal = ('protocolo',)
     raw_id_fields = ('origem', 'origem_setor', 'destino', 'destino_setor',)
-                     # 'protocolo',)
+    # 'protocolo',)
 
     # related_lookup_fields = {
     autocomplete_lookup_fields = {
@@ -432,9 +442,13 @@ class TramiteAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         """
         Bloquear a edicao de tramite
+        E testa se é super usuário
         """
         if obj is not None:
-            return False
+            if not request.user.is_superuser:
+                return False
+            else:
+                return True
         return super(TramiteAdmin,
                      self).has_change_permission(request, obj=obj)
 
@@ -443,9 +457,9 @@ class TramiteAdmin(admin.ModelAdmin):
         my_urls = patterns(
             '',
             (r'(?P<id>[\d\+]+)/guia/$',
-                self.admin_site.admin_view(self.guia)),
+             self.admin_site.admin_view(self.guia)),
             (r'(?P<id>[\d\+]+)/etiqueta/$',
-                self.admin_site.admin_view(self.etiqueta)),
+             self.admin_site.admin_view(self.etiqueta)),
         )
         return my_urls + urls
 
@@ -508,22 +522,22 @@ class TramiteAdmin(admin.ModelAdmin):
 
         # <a href="/{0}/{1}/{2}" class="grp-results">Editar</a>
         return """
-            <nav class="grp-pagination">
-                <ul>
-                    <li>
-                        <a href="{2}/guia/" class="grp-results" \
-                        onclick="return showAddAnotherPopup(this);">Guia</a>
-                        <a href="{2}/etiqueta/" class="grp-results" \
-                        onclick="return showAddAnotherPopup(this);"> \
-                        Etiqueta</a>
-                        <a href="/{0}/{1}/{2}/delete" \
-                        class="grp-results grp-delete-link">Deletar</a>
-                    </li>
-                </ul>
-            </nav>
-            """.format(obj._meta.app_label,
-                       obj._meta.module_name,
-                       obj.id,)
+    <nav class="grp-pagination">
+    <ul>
+    <li>
+    <a href="{2}/guia/" class="grp-results" \
+            onclick="return showAddAnotherPopup(this);">Guia</a>
+    <a href="{2}/etiqueta/" class="grp-results" \
+            onclick="return showAddAnotherPopup(this);"> \
+            Etiqueta</a>
+    <a href="/{0}/{1}/{2}/delete" \
+            class="grp-results grp-delete-link">Deletar</a>
+    </li>
+    </ul>
+    </nav>
+    """.format(obj._meta.app_label,
+               obj._meta.module_name,
+               obj.id,)
     action_link.allow_tags = True
     action_link.short_description = 'Ações'
 
@@ -539,6 +553,30 @@ class TramiteAdmin(admin.ModelAdmin):
     get_data_tramite.allow_tags = True
     get_data_tramite.short_description = 'Data do Trâmite'
     get_data_tramite.admin_order_field = 'data_tramite'
+
+    def truncate_origem(self, obj):
+        text = str(obj.origem).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_origem.short_description = 'Instituição de Origem'
+    truncate_origem.admin_order_field = 'origem'
+
+    def truncate_destino(self, obj):
+        text = str(obj.destino).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_destino.short_description = 'Instituição de Destino'
+    truncate_destino.admin_order_field = 'destino'
+
+    def truncate_origem_setor(self, obj):
+        text = str(obj.origem_setor).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_origem_setor.short_description = 'Setor Origem'
+    truncate_origem_setor.admin_order_field = 'origem_setor'
+
+    def truncate_destino_setor(self, obj):
+        text = str(obj.destino_setor).decode('utf8')
+        return (text[:30] + '...') if len(text) > 30 else text
+    truncate_destino_setor.short_description = 'Setor Destino'
+    truncate_destino_setor.admin_order_field = 'destino_setor'
 
     def queryset(self, request):
         """
