@@ -37,27 +37,35 @@ def create_admin(self, request, queryset):
 
                 # adicionando os status
                 s = {'Tramitando', 'Arquivado', 'Parado', 'Entregue'}
-                for i in s:
-                    new_status = Status(nome=i)
-                    new_status.save()
+                status_check = Status.objects.filter(nome__in=s)
+                if not status_check:
+                    for i in s:
+                        new_status = Status(nome=i)
+                        new_status.save()
 
                 # adicionando os tipos de instituicao
                 ti = {'Externa', 'Interna'}
-                for i in ti:
-                    new_tipoinst = TipoInstituicao(nome=i)
-                    new_tipoinst.save()
+                tipo_inst_check = TipoInstituicao.objects.filter(nome__in=ti)
+                if not tipo_inst_check:
+                    for i in ti:
+                        new_tipoinst = TipoInstituicao(nome=i)
+                        new_tipoinst.save()
 
                 # adicionando os carateres
                 c = {'Normal', 'Urgente'}
-                for i in c:
-                    new_carater = Carater(nome=i)
-                    new_carater.save()
+                carater_check = Carater.objects.filter(nome__in=c)
+                if not carater_check:
+                    for i in c:
+                        new_carater = Carater(nome=i)
+                        new_carater.save()
 
                 # adicionando as naturezas
                 n = {'Aberto', 'Confidencial'}
-                for i in n:
-                    new_natureza = Natureza(nome=i)
-                    new_natureza.save()
+                natureza_check = Natureza.objects.filter(nome__in=c)
+                if not carater_check:
+                    for i in n:
+                        new_natureza = Natureza(nome=i)
+                        new_natureza.save()
 
                 connection.set_schema_to_public()
 
