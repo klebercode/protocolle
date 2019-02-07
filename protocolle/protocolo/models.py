@@ -176,7 +176,7 @@ class Tramite(models.Model):
                 '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td> \
                 <td>%s</td></tr>' % (
                 k.protocolo, k.tipo_documento, k.numero, k.assunto,
-                k.interessado, k.data_recebimento.strftime('%d/%m/%Y %H:%M')))
+                k.interessado, k.data_recebimento.strftime('%d/%m/%Y %H:%i')))
             # out.append(
             #     k.protocolo, k.tipo_documento, k.numero,
             #     k.assunto, k.interessado, k.data_recebimento)
