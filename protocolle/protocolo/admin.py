@@ -7,7 +7,7 @@ from django.contrib.admin.options import TabularInline
 from django.conf.urls import patterns
 from django.shortcuts import render
 from django.db.models import Q
-from django.utils import timezone
+# from django.utils import timezone
 
 # from flexselect import FlexSelectWidget
 
@@ -293,7 +293,8 @@ class DocumentoAdmin(admin.ModelAdmin):
     get_protocolo.admin_order_field = 'protocolo'
 
     def get_data_recebimento(self, obj):
-        data_recebimento = timezone.localtime(obj.data_recebimento)
+        # data_recebimento = timezone.localtime(obj.data_recebimento)
+        data_recebimento = obj.data_recebimento
         return data_recebimento.strftime('%d/%m/%Y %H:%M')
     get_data_recebimento.allow_tags = True
     get_data_recebimento.short_description = 'Data do Recebimento'
@@ -548,7 +549,8 @@ class TramiteAdmin(admin.ModelAdmin):
     get_numero_guia.admin_order_field = 'pk'
 
     def get_data_tramite(self, obj):
-        data_tramite = timezone.localtime(obj.data_tramite)
+        # data_tramite = timezone.localtime(obj.data_tramite)
+        data_tramite = obj.data_tramite
         return data_tramite.strftime('%d/%m/%Y %H:%M')
     get_data_tramite.allow_tags = True
     get_data_tramite.short_description = 'Data do Trâmite'
